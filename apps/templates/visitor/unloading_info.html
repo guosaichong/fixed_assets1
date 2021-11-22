@@ -1,0 +1,168 @@
+{% extends "bootstrap/base.html" %}
+{%block title%}卸货约窗登记查询{%endblock%}
+{%block styles%}
+{{super()}}
+<style>
+    body {
+        padding-top: 70px;
+    }
+</style>
+{%endblock%}
+{%block body%}
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#"><img style="height: 40px;margin-top: -10px;"
+                    src="{{url_for('static',filename='img/logo.png')}}" alt="禹帆物流"></a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="/">首页</a></li>
+                <li><a href="{{url_for('office.detail')}}">IT设备管理</a></li>
+                <li><a href="{{url_for('visitor.visitor_info')}}">访客查询</a></li>
+                <li class="active"><a href="{{url_for('visitor.unloading')}}">卸货查询</a></li>
+
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                {% if current_user.username %}
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">欢迎 {{current_user.username}}<b
+                            class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="{{url_for('user.info')}}">用户中心</a></li>
+                        <li><a href="{{url_for('user.mod_password')}}">修改密码</a></li>
+                    </ul>
+                </li>
+
+
+                <input type="hidden" name="username" value="{{current_user.username}}">
+                <li><a href="{{url_for('user.logout')}}">注销</a></li>
+                {% else%}
+                <li><a href="{{url_for('user.login')}}">登录</a></li>
+                <li><a href="{{url_for('user.register')}}">注册</a></li>
+                {% endif %}
+            </ul>
+        </div>
+        <!--/.nav-collapse -->
+    </div>
+</nav>
+
+<div class="container">
+
+    <div
+        style="background-color: #fff;border-style: solid;border-color: #e7e7e7;border-width: 1px;border-left: none;border-right: none; height: 40px;">
+        <div class="pull-left" style="line-height: 40px;">
+            <p style="margin-left: 5px;">卸货时间表</p>
+        </div>
+        <div class="pull-right">
+            <input type="date" name="date" id="date" style="margin-top: 7px;" value="{{date}}">
+            <button id="search-btn" type="button" class="btn btn-default btn-sm" style="margin-right: 5px;">查询</button>
+        </div>
+    </div>
+    {% if pagination.total==0 %}
+    <div style="background-color: #fff;border-style: solid;border-color: #e7e7e7;border-width: 1px;border-left: none;border-right: none;min-height: 600px;margin-top: 15px;">
+        <p>当前没有数据，请稍后查询！</p>
+    </div>
+    {%else%}
+    <div style="background-color: #fff;border-style: solid;border-color: #e7e7e7;border-width: 1px;border-left: none;border-right: none;min-height: 600px;margin-top: 15px;">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <th>序号</th>
+                    <th>供应商</th>
+                    <th>送货司机</th>
+                    <th>手机号</th>
+                    <th>车牌号</th>
+                    <th>车辆类型</th>
+                    <th>卸货时间</th>
+                </thead>
+                <tbody>
+                    {%for item in pagination.items%}
+                    <tr>
+                        <td>{{loop.index}}</td>
+                        <td>{{item.0}}</td>
+                        <td>{{item.1}}</td>
+                        <td>{{item.2}}</td>
+                        <td>{{item.3}}</td>
+                        <td>{{item.4}}</td>
+                        <td>{{item.5}}</td>
+                    </tr>
+                    {%endfor%}
+                </tbody>
+            </table>
+            
+            
+        </div>
+        
+    </div>
+    <div class="page_selector" style="text-align: center;">
+
+        <ul class="pagination">
+            {% if pagination.has_prev %}
+            <li><a
+                    href="{{url_for('visitor.unloading')}}?date={{date}}&page={{pagination.prev_num}}">&laquo;</a>
+            </li>
+            {%else%}
+            <li class="disabled"><span>&laquo;</span></li>
+            {%endif%}
+            {% for i in pagination.iter_pages() %}
+            {%if i%}
+            {%if pagination.page==i%}
+            <li class="active">
+                <span>{{i}} <span class="sr-only">(current)</span></span>
+            </li>
+            {%else%}
+            <li><a href="{{url_for('visitor.unloading')}}?date={{date}}&page={{i}}">{{i}} <span
+                        class="sr-only">(current)</span></a>
+            </li>
+            {%endif%}
+            {%else%}
+            <li><span>...</span></li>
+            {%endif%}
+            {%endfor%}
+            {% if pagination.has_next %}
+            <li><a
+                    href="{{url_for('visitor.unloading')}}?date={{date}}&page={{pagination.next_num}}">&raquo;</a>
+            </li>
+            {%else%}
+            <li class="disabled"><span>&raquo;</span></li>
+            {%endif%}
+        </ul>
+    </div>
+    {%endif%}
+        
+        
+    
+
+</div> <!-- /container -->
+
+
+
+
+
+{%block navbar%}
+
+{%endblock navbar%}
+{%block scripts%}
+{{super()}}
+<script>
+    $(function(){
+        var search_date = $("#date").val();
+        $("#search-btn").click(function(){
+            search_date = $("#date").val();
+            $.get("{{url_for('visitor.unloading')}}?date="+search_date,{date:search_date},function(){
+                window.location.href="{{url_for('visitor.unloading')}}?date="+search_date
+            })
+
+        })
+    })
+</script>
+{%endblock scripts%}
+{%endblock body%}

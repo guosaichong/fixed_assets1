@@ -1,0 +1,259 @@
+{% extends "bootstrap/base.html" %}
+{% block title %}登录{% endblock %}
+{% block metas %}
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="description" content="">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="all,follow">
+{% endblock metas %}
+{%block styles%}
+<link href="{{url_for('static',filename='bootstrap/css/bootstrap.css')}}" rel="stylesheet">
+<link href="{{url_for('static',filename='css/style.default.css')}}" rel="stylesheet">
+<style>
+    .align-items-center {
+        -ms-flex-align: center !important;
+        align-items: center !important;
+    }
+
+    .d-flex {
+        display: -ms-flexbox !important;
+        display: flex !important;
+    }
+
+    h1 {
+        margin-top: 0;
+    }
+
+    *,
+    ::after,
+    ::before {
+        box-sizing: border-box;
+    }
+
+    button,
+    input {
+        overflow: visible;
+    }
+
+    button,
+    input,
+    optgroup,
+    select,
+    textarea {
+        margin: 0;
+        font-family: inherit;
+        font-size: inherit;
+        line-height: inherit;
+    }
+
+    .active {
+        border: 1px solid rgba(121, 106, 238, 0.9);
+    }
+
+    .form-group div {
+        color: red;
+    }
+
+    .content small,
+    .content a {
+        margin-top: 10px;
+    }
+</style>
+{%endblock%}
+{% block body -%}
+<div class="page login-page">
+    <div class="container d-flex align-items-center">
+        <div class="form-holder has-shadow">
+            <div class="row">
+                <!-- Logo & Information Panel-->
+                <div class="col-lg-6">
+                    <div class="info d-flex align-items-center">
+                        <div class="content">
+                            <div class="logo">
+                                <h1>欢迎登录</h1>
+                            </div>
+                            <p>IT设备管理系统</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Form Panel    -->
+                <div class="col-lg-6 bg-white">
+                    <div class="form d-flex align-items-center">
+                        <div class="content">
+                            <form method="post" action="javascript:;" class="form-validate" id="loginFrom">
+                                <div class="form-group">
+                                    <input id="login-username" type="text" required data-msg="请输入用户名"
+                                        placeholder="请输入用户名/手机号" class="input-material">
+                                    <div id="uname_tips"></div>
+                                </div>
+                                <div class="form-group">
+                                    <input id="login-password" type="password" required data-msg="请输入密码"
+                                        placeholder="请输入密码" class="input-material">
+                                    <div id="pwd_tips"></div>
+                                </div>
+                                <button id="login" type="submit" class="btn btn-primary">登录</button>
+                                <div style="margin-top: -40px;">
+
+
+                                    <div class="custom-control custom-checkbox " style="float: right;">
+                                        <input type="checkbox" class="custom-control-input" id="check1">
+                                        <label class="custom-control-label" for="check1">记住密码&nbsp;&nbsp;</label>
+                                    </div>
+                                </div>
+                            </form>
+                            <br />
+                            <small>没有账号?</small><a href="{{url_for('user.register')}}" class="signup">&nbsp;注册</a>
+                            <br />
+                            <small>忘记密码?</small><a href="{{url_for('user.forget')}}" class="signup">&nbsp;忘记密码</a>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block navbar -%}
+
+{%- endblock navbar %}
+{% block content -%}
+
+{%- endblock content %}
+
+{% block scripts %}
+<script src="{{url_for('static',filename='bootstrap/jquery.js')}}"></script>
+<script src="{{url_for('static',filename='bootstrap/js/bootstrap.js')}}"></script>
+<script src="{{url_for('static',filename='js/md5.js')}}"></script>
+{%- endblock scripts %}
+<script>
+    $(function () {
+        var flagName = false;
+        var flagPas = false;
+        var username, password;
+        /*判断上次是否勾选记住密码*/
+        var check1s = localStorage.getItem("check1");
+        var oldName = localStorage.getItem("userName");
+        var oldPass = localStorage.getItem("passWord");
+        if (check1s == "true") {
+            $("#login-username").val(oldName);
+            $("#login-password").val(oldPass);
+            $("#check1").prop('checked', true);
+            flagName = true;
+            flagPas = true;
+            username = oldName;
+            password = oldPass;
+        } else {
+            $("#login-username").val('');
+            $("#login-password").val('');
+            $("#check1").prop('checked', false);
+        }
+
+
+
+        // 用户名输入框获得焦点
+        $("#login-username").focus(function () {
+            // 清空输入框的占位文字
+            $("#login-username").attr("placeholder", "");
+            // 清空上一次输入错误的提示文字
+            $("#uname_tips").text("");
+            // 移除上一次输入错误的样式
+            $("#login-username").removeClass("form-control is-invalid")
+        })
+        // 用户名输入框失去焦点
+        $("#login-username").blur(function () {
+            username = $("#login-username").val();
+            // 用户名未输入，显示占位文字
+            if (username.length == 0) {
+                $("#login-username").attr("placeholder", "请输入用户名/手机号");
+                flagName = false;
+                // 用户名已输入，对用户名判断验证
+            } else {
+                if (/[\ \'\"\%\#\^\*\@\!]/g.test(username)) {
+                    $("#uname_tips").text("用户名含有非法字符")
+                    flagName = false;
+                } else if (username.length > 18 || username.length < 6) {
+                    $("#uname_tips").text("请输入6～18个字符")
+                    flagName = false;
+                } else {
+                    // 向后端服务器发送用户名，后端服务器查询数据库
+                    $.post("{{url_for('user.verifi_username')}}", { username: username }, function (data) {
+                        // 用户不存在
+                        if (data.code == 4000) {
+                            $("#uname_tips").text(data.msg)
+                            flagName = false;
+                            // 用户存在
+                        } else {
+                            flagName = true;
+                        }
+                    })
+                }
+            }
+        })
+        /*验证密码*/
+        $("#login-password").focus(function () {
+            // 清空输入框的占位字符
+            $("#login-password").attr("placeholder", "");
+            $("#pwd_tips").text("")
+            $("#login-password").removeClass("form-control is-invalid")
+        })
+        $("#login-password").blur(function () {
+            password = $("#login-password").val();
+            if (password.length == 0) {
+                $("#login-password").attr("placeholder", "请输入密码");
+                flagPas = false;
+            } else {
+                if (password.length < 6 || password.length > 18) {
+                    $("#pwd_tips").text("请输入6～18个字符")
+                    flagPas = false;
+                } else {
+
+                    flagPas = true;
+                }
+            }
+
+        })
+        // 登录按钮点击事件
+        $("#login").click(function () {
+            username = $("#login-username").val();
+            password = $("#login-password").val();
+            /*获取当前输入的账号密码*/
+            localStorage.setItem("userName", username)
+            localStorage.setItem("passWord", password)
+            /*获取记住密码  checkbox的值*/
+            var check1 = $("#check1").prop('checked');
+            localStorage.setItem("check1", check1);
+
+            // 用户名和密码都通过验证
+            if (flagName && flagPas) {
+                // 用md5加密
+                var password_md5 = $.md5(password);
+                // 网络请求，传送用户名和密码密文到后端服务器
+                $.post("{{url_for('user.login')}}", { username: username, password: password_md5 }, function (data) {
+                    // 密码正确，登录成功
+                    if (data.code == 200) {
+                        window.location.href = "{{url_for('office.detail')}}"
+                        // 密码错误，错误消息显示在页面上
+                    } else {
+                        $("#pwd_tips").text(data.msg)
+                    }
+                })
+            } else {
+                if (!flagName) {
+                    $("#login-username").addClass("form-control is-invalid");
+                    return;
+                }
+                if (!flagPas) {
+                    $("#register-password").addClass("form-control is-invalid");
+                    return;
+                }
+            }
+        })
+
+    })
+</script>
+
+
+{%- endblock body %}

@@ -1,0 +1,234 @@
+{% extends "bootstrap/base.html" %}
+{% block title %}忘记密码{% endblock %}
+{% block metas %}
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="description" content="">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="all,follow">
+{% endblock metas %}
+{%block styles%}
+<link href="{{url_for('static',filename='bootstrap/css/bootstrap.css')}}" rel="stylesheet">
+<link href="{{url_for('static',filename='css/style.default.css')}}" rel="stylesheet">
+<style>
+    .align-items-center {
+        -ms-flex-align: center !important;
+        align-items: center !important;
+    }
+
+    .d-flex {
+        display: -ms-flexbox !important;
+        display: flex !important;
+    }
+
+    h1 {
+        margin-top: 0;
+    }
+
+    *,
+    ::after,
+    ::before {
+        box-sizing: border-box;
+    }
+
+    button,
+    input {
+        overflow: visible;
+    }
+
+    button,
+    input,
+    optgroup,
+    select,
+    textarea {
+        margin: 0;
+        font-family: inherit;
+        font-size: inherit;
+        line-height: inherit;
+    }
+
+    .active {
+        border: 1px solid rgba(121, 106, 238, 0.9);
+    }
+
+    .form-group div {
+        color: red;
+    }
+
+    .content small,
+    .content a {
+        margin-top: 10px;
+    }
+</style>
+{%endblock%}
+{% block body -%}
+<div class="page login-page">
+    <div class="container d-flex align-items-center">
+        <div class="form-holder has-shadow">
+            <div class="row">
+                <!-- Logo & Information Panel-->
+                <div class="col-lg-6">
+                    <div class="info d-flex align-items-center">
+                        <div class="content">
+                            <div class="logo">
+                                <h1>欢迎使用</h1>
+                            </div>
+                            <p>IT设备管理系统</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Form Panel    -->
+                <div class="col-lg-6 bg-white">
+                    <div class="form d-flex align-items-center">
+                        <div class="content">
+                            <form method="post" action="javascript:;" class="form-validate" id="loginFrom">
+                                <div class="form-group">
+                                    <input name="username" type="text" required placeholder="请输入用户名/手机号"
+                                        class="input-material">
+                                    <div id="uname_tips"></div>
+                                </div>
+                                <div class="form-group">
+                                    <input name="email" type="email" required placeholder="请输入预留邮箱地址"
+                                        class="input-material">
+                                    <div id="email_tips"></div>
+                                </div>
+                                <div class="form-group">
+                                    <div id="tips"></div>
+                                </div>
+                                <button id="btn" type="submit" class="btn btn-primary">确定</button>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block navbar -%}
+
+{%- endblock navbar %}
+{% block content -%}
+
+{%- endblock content %}
+
+{% block scripts %}
+<script src="{{url_for('static',filename='bootstrap/jquery.js')}}"></script>
+<script src="{{url_for('static',filename='bootstrap/js/bootstrap.js')}}"></script>
+<script src="{{url_for('static',filename='js/md5.js')}}"></script>
+{%- endblock scripts %}
+<script>
+    function changeState() {
+            window.location.href = "{{url_for('user.login')}}";
+        }
+    $(function () {
+        var username, email;
+        var flagName, flagEmail;
+        // 用户名输入框获得焦点
+        $("[name='username']").focus(function () {
+            // 清空输入框的占位文字
+            $(this).attr("placeholder", "");
+            // 清空上一次输入错误的提示文字
+            $("#uname_tips").text("");
+            // 移除上一次输入错误的样式
+            $("[name='username']").removeClass("form-control is-invalid")
+        })
+        // 用户名输入框失去焦点
+        $("[name='username']").blur(function () {
+            username = $("[name='username']").val();
+            // 用户名未输入，显示占位文字
+            if (username.length == 0) {
+                $("[name='username']").attr("placeholder", "请输入用户名/手机号");
+                flagName = false;
+                // 用户名已输入，对用户名判断验证
+            } else {
+                if (/[\ \'\"\%\#\^\*\@\!]/g.test(username)) {
+                    $("#uname_tips").text("用户名含有非法字符")
+                    flagName = false;
+                } else if (username.length > 18 || username.length < 6) {
+                    $("#uname_tips").text("请输入6～18个字符")
+                    flagName = false;
+                } else {
+                    // 向后端服务器发送用户名，后端服务器查询数据库
+                    $.post("{{url_for('user.verifi_username')}}", { username: username }, function (data) {
+                        // 用户不存在
+                        if (data.code == 4000) {
+                            $("#uname_tips").text(data.msg)
+                            flagName = false;
+                            // 用户存在
+                        } else {
+                            flagName = true;
+                        }
+                    })
+                }
+            }
+        })
+        /*验证邮箱*/
+        $("[name='email']").focus(function () {
+            // 清空输入框的占位字符
+            $(this).attr("placeholder", "");
+            $("#email_tips").text("")
+            $(this).removeClass("form-control is-invalid")
+        })
+        $("[name='email']").blur(function () {
+            email = $(this).val();
+            if (email.length == 0) {
+                $(this).attr("placeholder", "请输入预留邮箱地址");
+                flagEmail = false;
+            } else {
+                var re = /^[A-Za-z\d]+([-_.][A-Za-z\d]+)*@([A-Za-z\d]+[.])+[A-Za-z]{2,4}$/;
+                if (re.test(email)) {
+                    flagEmail = true;
+
+                } else {
+                    $("#email_tips").text("请输入正确的邮箱地址")
+                    flagEmail = false;
+                }
+            }
+
+        })
+        // 确定按钮点击事件
+        
+        $("#btn").click(function () {
+            username = $("[name='username']").val();
+            email = $("[name='email']").val();
+
+            // 用户名和密码都通过验证
+            if (flagName && flagEmail) {
+
+                $.post("{{url_for('user.forget')}}", { username: username, email: email }, function (data, status) {
+
+                    if (status == "success") {
+
+                        if (data.code == 2) {
+                            $("#email_tips").text(data.msg);
+                        }
+
+                        if (data.code == 0) {
+                            $("#tips").text(data.msg);
+                            window.setTimeout("changeState()", 3000)
+                            
+                        }
+
+                    }
+                })
+            } else {
+                if (!flagName) {
+                    $("[name='username']").addClass("form-control is-invalid");
+                    return;
+                }
+                if (!flagEmail) {
+                    $("[name='email']").addClass("form-control is-invalid");
+                    return;
+                }
+            }
+        })
+
+    })
+</script>
+
+
+{%- endblock body %}

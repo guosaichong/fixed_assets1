@@ -1,0 +1,39 @@
+.navbar {
+
+    border-bottom: 1px solid rgba(121, 106, 238, 0.9);
+}
+
+
+#tips {
+    display: none;
+}
+
+.left {
+    box-sizing: border-box;
+    /* border: 1px solid #eee; */
+    background-color: rgb(248, 248, 248);
+
+}
+
+.left .tab {
+    padding-left: 4px;
+    font-weight: bold;
+    display: block;
+    font-size: 1.2em;
+    line-height: 2.6em;
+    font-family: proxima-nova, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    color: #3b77bb;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, .15);
+    border: 1px solid rgba(0, 0, 0, .1);
+    border-bottom: 0;
+    -moz-border-top-left-radius: 3px;
+    -webkit-border-top-left-radius: 3px;
+    border-top-left-radius: 3px;
+    -moz-border-top-right-radius: 3px;
+    -webkit-border-top-right-radius: 3px;
+    border-top-right-radius: 3px;
+    -moz-background-clip: padding;
+    -webkit-background-clip: padding-box;
+    background-clip: padding-box;
+    background-color: #f2f2f2;
+}

@@ -1,0 +1,23 @@
+{%extends "base.html"%}
+{%block title%}Page Not Found{%endblock%}
+{% block mystyles %}
+<style>
+    .my-container{
+        margin: 50px auto;
+        text-align: center;
+    }
+</style>
+{% endblock mystyles %}
+{%block navbar%}
+
+{%- endblock navbar %}
+{% block content -%}
+<div class="container">
+    <div class="my-container">
+        <h1>页面没有找到</h1>
+        <img src="{{url_for('static',filename='img/pageNotFound3.png')}}" alt="pageNotFound" style="width: 800px;height: 480px;">
+        <p>您请求的页面没有找到，你可以回<a href="{{url_for('public.index')}}">首页</a>。</p>
+    </div>
+    
+</div>
+{%- endblock content %}

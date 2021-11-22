@@ -1,0 +1,118 @@
+{% extends "bootstrap/base.html" %}
+{% block title %}用户角色{% endblock %}
+{%block styles%}
+{{super()}}
+<style>
+    body{
+        padding-top: 70px;
+    }
+    .tips {
+        color: red;
+        font-size: 12px;
+    }
+
+    .col-md2 {
+        min-height: 600px;
+        background-color: rgb(248, 248, 248);
+    }
+
+    .col-md2 ul {
+        list-style: none;
+        -webkit-padding-start: 0px;
+
+    }
+
+    .col-md2 ul li {
+        height: 30px;
+        line-height: 30px;
+
+    }
+</style>
+{%endblock%}
+{%block body%}
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#"><img style="height: 40px;margin-top: -10px;"
+                    src="{{url_for('static',filename='img/logo.png')}}" alt="禹帆物流"></a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="/">首页</a></li>
+                <li><a href="{{url_for('office.detail')}}">IT设备管理</a></li>
+                <li><a href="{{url_for('visitor.visitor_info')}}">访客查询</a></li>
+                <li><a href="{{url_for('visitor.unloading')}}">卸货查询</a></li>
+
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                {% if current_user.username %}
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">欢迎 {{current_user.username}}<b
+                            class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="{{url_for('user.info')}}">用户中心</a></li>
+                        <li><a href="{{url_for('user.mod_password')}}">修改密码</a></li>
+                    </ul>
+                </li>
+
+
+                <input type="hidden" name="username" value="{{current_user.username}}">
+                <li><a href="{{url_for('user.logout')}}">注销</a></li>
+                {% else%}
+                <li><a href="{{url_for('user.login')}}">登录</a></li>
+                <li><a href="{{url_for('user.register')}}">注册</a></li>
+                {% endif %}
+            </ul>
+        </div>
+        <!--/.nav-collapse -->
+    </div>
+</nav>
+<div class="container">
+    <div class="col-md-2 col-sm-2 col-xs-2">
+        <div class="col-md2">
+            <ul>
+                <li><a href="{{url_for('user.info')}}">基本资料</a></li>
+                <li><a href="{{url_for('user.role')}}">用户角色</a></li>
+            </ul>
+        </div>
+
+    </div>
+    <div>
+        <div class="col-md-10 col-sm-10 col-xs-10" style="min-height: 600px;background-color: rgb(248, 248, 248);">
+            <div class="row">
+                <p>更改用户角色，需要管理员审核。</p> 
+            </div>
+            <div class="radio">
+                <label>
+                    <input type="radio" name="optionsRadios" id="optionsRadios1" value=1 {% if current_user.role.id==1%} checked{%endif%}>
+                    注册用户：查看数据
+                </label>
+            </div>
+            <div class="radio">
+                <label>
+                    <input type="radio" name="optionsRadios" id="optionsRadios2" value=2 {% if current_user.role.id==2%} checked{%endif%}>
+                    管理员：对设备增加，修改，删除
+                </label>
+            </div>
+            
+            <div>
+                <button class="btn btn-default">确定</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{%block scripts%}
+{{super()}}
+<script src="{{url_for('static',filename='js/md5.js')}}"></script>
+
+{%endblock scripts%}
+{%endblock body%}

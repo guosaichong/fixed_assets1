@@ -1,0 +1,210 @@
+{%extends "bootstrap/base.html"%}
+{% block title %}卸货窗口预约{% endblock title %}
+{% block content -%}
+
+<div class="container">
+	<h2>卸货窗口预约</h2>
+	<form action="{{url_for('visitor.car')}}" method="POST">
+		<div>
+			{{form.hidden_tag()}}
+		</div>
+        <div>
+			{{form.supplier.label}}{{form.supplier}}
+			{%for message in form.supplier.errors%}
+			<p>{{message}}</p>
+			{%endfor%}
+			<p id="supplier_tips"></p>
+		</div>
+		<div>
+			{{form.delivery_contact.label}}{{form.delivery_contact}}
+			{%for message in form.delivery_contact.errors%}
+			<p>{{message}}</p>
+			{%endfor%}
+			<p id="delivery_contact_tips"></p>
+		</div>
+		<div>
+			{{form.phone.label}}{{form.phone}}
+			{%for message in form.phone.errors%}
+			<p>{{message}}</p>
+			{%endfor%}
+			<p id="phone_tips"></p>
+		</div>
+		<div>
+			{{form.license_number.label}}{{form.license_number}}
+			{%for message in form.license_number.errors%}
+			<p>{{message}}</p>
+			{%endfor%}
+			<p id="license_number_tips"></p>
+		</div>
+		
+		<div>
+			{{form.car_type.label}}{{form.car_type}}
+			{%for message in form.car_type.errors%}
+			<p>{{message}}</p>
+			{%endfor%}
+			<p id="car_type_tips"></p>
+		</div>
+        <div>
+			{{form.scheduled_unloading_time.label}}{{form.scheduled_unloading_time}}
+			{%for message in form.scheduled_unloading_time.errors%}
+			<p>{{message}}</p>
+			{%endfor%}
+			<p id="scheduled_unloading_time_tips"></p>
+		</div>
+		<div>
+			{{form.verify_code.label}}
+			<img src="{{url_for('visitor.get_unloading_code')}}" alt="" srcset="" id="myImg"> {{form.verify_code}}
+
+			<p id="verify_code_tips" style="color: red;">{%if form.verify_code.errors
+				%}{{form.verify_code.errors[0]}}{%endif%}</p>
+		</div>
+		<div>
+			{{form.submit}}
+		</div>
+
+	</form>
+</div>
+
+
+{%- endblock content %}
+{%block scripts%}
+{{super()}}
+<script>
+
+
+	$("#myImg").click(function () {
+		// 加随机值 再次请求地址一样，服务器不重新生成
+		$(this).attr("src", "{{url_for('visitor.get_unloading_code')}}?ran=" + Math.random())
+
+	});
+	//供应商验证
+	var init_supplier = document.getElementById("supplier").placeholder;
+	var supplier = document.getElementById("supplier");
+	var supplier_tips = document.getElementById("supplier_tips");
+	supplier.onfocus = function () {
+		if (this.placeholder == init_supplier) {
+			this.placeholder = ''
+		}
+		supplier_tips.innerHTML = ""
+	}
+	supplier.onblur = function () {
+		if (this.value == '') {
+			this.placeholder = init_supplier
+		} else {
+			if (/^[\u4e00-\u9fa5A-Za-z0-9]{2,30}$/.test(supplier.value)) {
+
+				supplier_tips.innerHTML = ''
+
+			} else {
+				supplier_tips.innerHTML = '请输入正确的供应商名称！'
+				supplier_tips.style.color = 'red'
+
+
+			}
+		}
+	}
+	//送货人姓名验证
+	var init_delivery_contact = document.getElementById("delivery_contact").placeholder;
+	var delivery_contact = document.getElementById("delivery_contact");
+	var delivery_contact_tips = document.getElementById("delivery_contact_tips");
+
+
+	delivery_contact.onfocus = function () {
+		if (this.placeholder == init_delivery_contact) {
+			this.placeholder = ''
+		}
+		delivery_contact_tips.innerHTML = ''
+	}
+	delivery_contact.onblur = function () {
+		if (this.value == '') {
+			this.placeholder = init_delivery_contact;
+
+		} else {
+
+
+			if (/^(([a-zA-Z+\.?\·?a-zA-Z+]{2,16}$)|([\u4e00-\u9fa5+\·?\u4e00-\u9fa5+]{2,16}$))/.test(delivery_contact.value)) {
+				delivery_contact_tips.innerHTML = ''
+
+			} else {
+				delivery_contact_tips.innerHTML = '请输入正确的名字！'
+				delivery_contact_tips.style.color = 'red'
+
+
+			}
+		}
+	}
+	//电话验证
+	var init_phone = document.getElementById("phone").placeholder;
+	var phone = document.getElementById("phone");
+	var phone_tips = document.getElementById("phone_tips");
+	phone.onfocus = function () {
+		if (this.placeholder == init_phone) {
+			this.placeholder = ''
+		}
+		phone_tips.innerHTML = ""
+	}
+	phone.onblur = function () {
+		if (this.value == '') {
+			this.placeholder = init_phone
+		} else {
+			if (/^1[3456789]\d{9}$/.test(phone.value)) {
+
+				phone_tips.innerHTML = ''
+
+			} else {
+				phone_tips.innerHTML = '请输入正确的手机号！'
+				phone_tips.style.color = 'red'
+
+
+			}
+		}
+	}
+	// 车牌号验证
+	var init_license = document.getElementById("license_number").placeholder;
+	var license_number = document.getElementById("license_number");
+	var license_number_tips = document.getElementById("license_number_tips");
+	// 输入框获得焦点
+	license_number.onfocus = function () {
+		if (this.placeholder == init_license) {
+			this.placeholder = ''
+		}
+		license_number_tips.innerHTML = ""
+	}
+	// 失去焦点
+	license_number.onblur = function () {
+		if (this.value == '') {
+			this.placeholder = init_license
+		} else {
+			license_number.value = license_number.value.toUpperCase();
+			if (/(^[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领A-Z]{1}[A-Z]{1}[A-Z0-9]{4}[A-Z0-9挂学警港澳]{1}$)/.test(
+				license_number.value)) {
+
+				license_number_tips.innerHTML = ''
+
+			} else {
+				license_number_tips.innerHTML = '请输入正确的车牌号！'
+				license_number_tips.style.color = 'red'
+
+
+			}
+		}
+	}
+	
+	
+	// 验证码输入框
+	var init_verify_code = document.getElementById("verify_code").placeholder;
+	var verify_code = document.getElementById("verify_code");
+	var verify_code_tips = document.getElementById("verify_code_tips");
+	verify_code.onfocus = function () {
+		if (this.placeholder == init_verify_code) {
+			this.placeholder = ''
+		}
+		verify_code_tips.innerHTML = ""
+	}
+	verify_code.onblur = function () {
+		if (this.value == '') {
+			this.placeholder = init_verify_code
+		}
+	}
+</script>
+{%endblock%}

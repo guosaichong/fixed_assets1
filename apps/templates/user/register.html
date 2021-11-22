@@ -1,0 +1,271 @@
+{% extends "bootstrap/base.html" %}
+{% block title %}注册{% endblock %}
+{% block metas %}
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="description" content="">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="all,follow">
+{% endblock metas %}
+{%block styles%}
+<link href="{{url_for('static',filename='bootstrap/css/bootstrap.css')}}" rel="stylesheet">
+<link href="{{url_for('static',filename='css/style.default.css')}}" rel="stylesheet">
+<style>
+    .align-items-center {
+        -ms-flex-align: center !important;
+        align-items: center !important;
+    }
+
+    .d-flex {
+        display: -ms-flexbox !important;
+        display: flex !important;
+    }
+
+    h1 {
+        margin-top: 0;
+    }
+
+    *,
+    ::after,
+    ::before {
+        box-sizing: border-box;
+    }
+
+    button,
+    input {
+        overflow: visible;
+    }
+
+    button,
+    input,
+    optgroup,
+    select,
+    textarea {
+        margin: 0;
+        font-family: inherit;
+        font-size: inherit;
+        line-height: inherit;
+    }
+
+    .active {
+        border: 1px solid rgba(121, 106, 238, 0.9);
+    }
+
+    .form-group div {
+        color: red;
+    }
+</style>
+{%endblock%}
+{% block body -%}
+<div class="page login-page">
+    <div class="container d-flex align-items-center">
+        <div class="form-holder has-shadow">
+            <div class="row">
+                <!-- Logo & Information Panel-->
+                <div class="col-lg-6">
+                    <div class="info d-flex align-items-center">
+                        <div class="content">
+                            <div class="logo">
+                                <h1>欢迎注册</h1>
+                            </div>
+                            <p>IT设备管理系统</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Form Panel    -->
+                <div class="col-lg-6 bg-white">
+                    <div class="form d-flex align-items-center">
+                        <div class="content">
+                            <div class="form-group">
+                                <input id="register-username" class="input-material" type="text" name="registerUsername"
+                                    placeholder="请输入用户名/手机号">
+                                <div id="uname_tips"></div>
+                            </div>
+                            <div class="form-group">
+                                <input id="register-password" class="input-material" type="password"
+                                    name="registerPassword" placeholder="请输入密码">
+                                <div id="pwd_tips"></div>
+                            </div>
+                            <div class="form-group">
+                                <input id="register-passwords" class="input-material" type="password"
+                                    name="registerPasswords" placeholder="确认密码">
+                                <div id="pwds_tips"></div>
+                            </div>
+                            <div class="form-group">
+                                <input id="register-email" class="input-material" type="text" name="registerEmail"
+                                    placeholder="请输入邮箱">
+                                <div id="email_tips"></div>
+                            </div>
+                            <div class="form-group">
+                                <button id="regbtn" type="button" name="registerSubmit"
+                                    class="btn btn-primary">注册</button>
+                            </div>
+                            <small>已有账号?</small><a href="{{url_for('user.login')}}" class="signup">&nbsp;登录</a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block navbar -%}
+
+{%- endblock navbar %}
+{% block content -%}
+
+{%- endblock content %}
+
+{% block scripts %}
+<script src="{{url_for('static',filename='bootstrap/jquery.js')}}"></script>
+<script src="{{url_for('static',filename='bootstrap/js/bootstrap.js')}}"></script>
+<script src="{{url_for('static',filename='js/md5.js')}}"></script>
+{%- endblock scripts %}
+<script>
+    $(function () {
+        var flagName = false;
+        var flagPas = false;
+        var flagPass = false;
+        var flagEmail = false;
+        /*验证用户名*/
+        var name, password, passwords, email;
+
+        $("#register-username").focus(function () {
+            // 清空输入框的占位字符
+            $("#register-username").attr("placeholder", "");
+            $("#uname_tips").text("")
+            $("#register-username").removeClass("form-control is-invalid")
+            
+        })
+        $("#register-username").blur(function () {
+            name = $("#register-username").val();
+
+            if (name.length == 0) {
+                $("#register-username").attr("placeholder", "请输入用户名/手机号");
+                flagName = false;
+            } else {
+                if (/[\ \'\"\%\#\^\*\@\!]/g.test(name)) {
+                    $("#uname_tips").text("用户名含有非法字符")
+                    flagName = false;
+                } else if (name.length > 18 || name.length < 6) {
+                    $("#uname_tips").text("请输入6～18个字符")
+                    flagName = false;
+                } else {
+                    $.post("{{url_for('user.verifi_username')}}", { username: name }, function (data) {
+                        if (data.code == 4001) {
+                            $("#uname_tips").text(data.msg)
+                            flagName = false;
+                        } else {
+                            
+                            flagName = true;
+                        }
+                    })
+                }
+            }
+
+
+        })
+
+        /*验证密码*/
+        $("#register-password").focus(function () {
+            // 清空输入框的占位字符
+            $("#register-password").attr("placeholder", "");
+            $("#pwd_tips").text("")
+            $("#register-password").removeClass("form-control is-invalid")
+        })
+        $("#register-password").blur(function () {
+            password = $("#register-password").val();
+            if (password.length == 0) {
+                $("#register-password").attr("placeholder", "请输入密码");
+                flagPas = false;
+            } else {
+                if (password.length < 6 || password.length > 18) {
+                    $("#pwd_tips").text("请输入6～18个字符")
+                    flagPas = false;
+                } else {
+
+                    flagPas = true;
+                }
+            }
+
+        })
+        /*验证确认密码*/
+        $("#register-passwords").focus(function () {
+            // 清空输入框的占位字符
+            $("#register-passwords").attr("placeholder", "");
+            $("#pwds_tips").text("")
+            $("#register-passwords").removeClass("form-control is-invalid")
+        })
+        $("#register-passwords").blur(function () {
+            passwords = $("#register-passwords").val();
+            if (passwords.length == 0) {
+                $("#register-passwords").attr("placeholder", "确认密码");
+                flagPass = false;
+            } else {
+                if (password != passwords) {
+                    $("#pwds_tips").text("两次密码不一样")
+                    flagPass = false;
+                } else {
+                    flagPass = true;
+                }
+            }
+
+        })
+
+        // 验证邮箱
+        $("#register-email").focus(function () {
+            // 清空输入框的占位字符
+            $("#register-email").attr("placeholder", "");
+            $("#email_tips").text("")
+            $("#register-email").removeClass("form-control is-invalid")
+        })
+        $("#register-email").blur(function () {
+            email = $("#register-email").val();
+            if (email.length == 0) {
+                $("#register-email").attr("placeholder", "请输入邮箱")
+            } else {
+                var re = /^[A-Za-z\d]+([-_.][A-Za-z\d]+)*@([A-Za-z\d]+[.])+[A-Za-z]{2,4}$/;
+                if (re.test(email)) {
+                    $("#register-email").addClass("form-control is-valid");
+                    flagEmail = true;
+                } else {
+                    $("#email_tips").text("请输入正确的邮箱")
+                    flagEmail = false;
+                }
+            }
+
+        })
+
+        $("#regbtn").click(function () {
+            if (flagName && flagPas && flagPass && flagEmail) {
+                var password_md5 = $.md5(password);
+                $.post("{{url_for('user.register')}}", { username: name, password: password_md5, email: email }, function (data) {
+                    if(data.code==200){
+                        window.location.href="{{url_for('user.login')}}"
+                    }
+                })
+            } else {
+                if (!flagName) {
+                    $("#register-username").addClass("form-control is-invalid");
+                    return;
+                }
+                if (!flagPas) {
+                    $("#register-password").addClass("form-control is-invalid");
+                    return;
+                }
+                if (!flagPass) {
+                    $("#register-passwords").addClass("form-control is-invalid");
+                    return;
+                }
+                if (!flagEmail) {
+                    $("#register-email").addClass("form-control is-invalid");
+                    return;
+                }
+            }
+        })
+    })
+</script>
+
+
+{%- endblock body %}

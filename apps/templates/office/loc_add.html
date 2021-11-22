@@ -1,0 +1,383 @@
+{% extends "base.html" %}
+{% block title %}增加设备{% endblock %}
+{% block styles %}
+{{super()}}
+<style>
+    body{
+        padding-top: 70px;
+    }
+    .tips {
+        color: red;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#"><img style="height: 40px;margin-top: -10px;"
+                    src="{{url_for('static',filename='img/logo.png')}}" alt="禹帆物流"></a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="/">首页</a></li>
+                <li class="active"><a href="{{url_for('office.detail')}}">IT设备管理</a></li>
+                <li><a href="{{url_for('visitor.visitor_info')}}">访客查询</a></li>
+                <li><a href="{{url_for('visitor.unloading')}}">卸货查询</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                {% if current_user.username %}
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">欢迎 {{current_user.username}}<b
+                            class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="{{url_for('user.info')}}">用户中心</a></li>
+                        <li><a href="{{url_for('user.mod_password')}}">修改密码</a></li>
+                    </ul>
+                </li>
+
+
+                <input type="hidden" name="username" value="{{current_user.username}}">
+                <li><a href="{{url_for('user.logout')}}">注销</a></li>
+                {% else%}
+                <li><a href="{{url_for('user.login')}}">登录</a></li>
+                <li><a href="{{url_for('user.register')}}">注册</a></li>
+                {% endif %}
+            </ul>
+        </div>
+        <!--/.nav-collapse -->
+    </div>
+</nav>
+<div class="container" style="min-height: 600px;background-color: rgb(248, 248, 248);">
+    <div class="col-md-2"></div>
+    <div class="col-md-8">
+        <form class="form-horizontal" role="form" action="javascript:;">
+            <div class="form-group">
+                <label for="asset_number" class="col-sm-2 control-label"><span style="color: red;">*</span>设备编号：</label>
+                <div class="col-sm-7">
+                    <input type="text" class="form-control" id="asset_number" name="asset_number" placeholder="请输入设备编号"
+                        required>
+                    <div id="asset_number_tips" class="tips"></div>
+                </div>
+
+            </div>
+            <div class="form-group">
+                <label for="name" class="col-sm-2 control-label"><span style="color: red;">*</span>设备名称：</label>
+                <div class="col-sm-7">
+                    <input type="text" class="form-control" id="name" name="name" placeholder="请输入设备名称" required>
+                    <div id="name_tips" class="tips"></div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="model" class="col-sm-2 control-label">品牌型号：</label>
+                <div class="col-sm-7">
+                    <input type="text" class="form-control" id="model" name="model" placeholder="请输入品牌型号">
+                    <div id="model_tips" class="tips"></div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="parameter" class="col-sm-2 control-label">主要参数：</label>
+                <div class="col-sm-7">
+                    <input type="text" class="form-control" id="parameter" name="parameter" placeholder="请输入主要参数">
+                    <div id="parameter_tips" class="tips"></div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="select_cat" class="col-sm-2 control-label"><span style="color: red;">*</span>所属类别：</label>
+                <div class="col-sm-7">
+                    <select id="select_cat" name="select_cat" class="form-control">
+                        {%for c in cat_list%}
+                        <option value="{{c.id}}">{{c.name}}</option>
+                        {%endfor%}
+                    </select>
+
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="select_loc" class="col-sm-2 control-label"><span style="color: red;">*</span>所属部门：</label>
+                <div class="col-sm-7">
+                    <select id="select_loc" name="select_loc" class="form-control">
+                        {%for dep in dep_list%}
+                        <option value="{{dep.id}}">{{dep.name}}</option>
+                        {%endfor%}
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="user" class="col-sm-2 control-label">使用人：</label>
+                <div class="col-sm-7">
+                    <input type="text" class="form-control" id="user" name="user" placeholder="请输入使用人">
+                    <div id="user_tips" class="tips"></div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="IPaddress" class="col-sm-2 control-label">IP地址：</label>
+                <div class="col-sm-7">
+                    <input type="text" class="form-control" id="IPaddress" name="IPaddress" placeholder="请输入IP地址">
+                    <div id="IPaddress_tips" class="tips"></div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="purchase_date" class="col-sm-2 control-label">购买日期：</label>
+                <div class="col-sm-7">
+                    <input type="date" class="form-control" id="purchase_date" name="purchase_date">
+                    <div id="purchase_date_tips" class="tips"></div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="purchase_cost" class="col-sm-2 control-label">购买成本：</label>
+                <div class="col-sm-7">
+                    <div class="input-group">
+                        <input id="purchase_cost" name="purchase_cost" type="text" class="form-control">
+                        <span class="input-group-addon">元</span>
+                    </div>
+                    
+                    <input name="location" type="hidden" class="form-control" value="{{location_id}}">
+                    <div id="purchase_cost_tips" class="tips"></div>
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label"><span style="color: red;">*</span>设备状态：</label>
+                <div class="col-sm-7">
+                    <label class="radio-inline">
+                        <input type="radio" name="asset_status" value="在用" checked>在用
+                    </label>
+                    <label class="radio-inline">
+                        <input type="radio" name="asset_status" value="闲置"> 闲置
+                    </label>
+                    <label class="radio-inline">
+                        <input type="radio" name="asset_status" value="报废"> 报废
+                    </label>
+                    <label class="radio-inline">
+                        <input type="radio" name="asset_status" value="转移"> 转移
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-7">
+                    <button class="btn btn-default" id="enter">确定</button>
+                </div>
+
+            </div>
+        </form>
+
+    </div>
+    <div class="col-md-2"></div>
+</div>
+
+
+
+
+{% block scripts %}
+{{super()}}
+<script>
+    function getDateStr(date) {
+        var month = date.getMonth() + 1;
+        var strDate = date.getFullYear() + '-' + month + '-' + date.getDate();
+        return strDate;
+    }
+    $(document).ready(function () {
+        var d = new Date();
+        var location_id;
+        location_id = $("[name='location']").val();
+        var asset_number, name, model, parameter, select_cat, select_loc, user, IPaddress, purchase_date, purchase_cost, asset_status, purchase_cost_float;
+        $("[name='asset_number']").focus(function () {
+
+            // 清除样式，提示
+            $("#asset_number_tips").text("")
+
+        })
+        $("[name='asset_number']").blur(function () {
+            asset_number = $("[name='asset_number']").val();
+            if (asset_number != "") {
+                if (isNaN(asset_number)) {
+
+                    if (/[@#\$%\^&\*]+/gi.test(asset_number)) { //验证是否含有特殊字符
+
+
+                        $("#asset_number_tips").text("设备编号不能带有特殊字符")
+
+                        return
+                    }
+
+                    if (asset_number.length > 20 || asset_number.length < 6) {
+                        $("#asset_number_tips").text("长度应在6到20位")
+                        return
+                    }
+                    $.post("/asset_number_verifi/" + asset_number, {}, function (data) {
+                        if (data.code == 0) {
+
+                        } else {
+                            // 资产编号已存在
+
+                            $("#asset_number_tips").text(data.msg)
+                            return
+                        }
+                    })
+
+                } else {
+
+                    $("#asset_number_tips").text("设备编号不能全是数字")
+                    return
+                }
+
+            }
+        })
+        $("[name='name']").focus(function () {
+            $("#name_tips").text("")
+        })
+        $("[name='name']").blur(function () {
+            name = $("[name='name']").val();
+            if (name != "") {
+                if (isNaN(name)) {
+
+                    if (/[@#\$%\^&\*]+/gi.test(name)) { //验证是否含有特殊字符
+
+
+                        $("#name_tips").text("名称不能带有特殊字符")
+
+                        return
+                    }
+
+                    if (name.length > 10) {
+
+                        $("#name_tips").text("长度不符合规定，请输十个或以下汉字")
+                        return
+                    }
+
+                } else {
+
+                    $("#name_tips").text("名称不能是数字")
+                    return
+                }
+            }
+        })
+        $("[name='model']").focus(function () {
+            $("#model_tips").text("")
+
+        })
+        $("[name='model']").blur(function () {
+            model = $("[name='model']").val();
+            if (model != "") {
+                if (model.length > 20) {
+                    $("#model_tips").text("长度不能超过20个字符")
+                    return
+                }
+            }
+        })
+        $("[name='parameter']").focus(function () {
+            $("#parameter_tips").text("")
+        })
+        $("[name='parameter']").blur(function () {
+            parameter = $("[name='parameter']").val();
+            if (parameter != "") {
+                if (parameter.length > 30) {
+                    $("#parameter_tips").text("长度不能超过30个字符")
+                    return
+                }
+            }
+        })
+        $("[name='user']").focus(function () {
+            $("#user_tips").text("")
+        })
+        $("[name='user']").blur(function () {
+            user = $("[name='user']").val();
+            if (user != '') {
+
+                if (user.length > 30) {
+
+                    $("#user_tips").text("长度不能超过30个字符")
+                    return
+                }
+                if (!/^(([a-zA-Z+\.?\·?a-zA-Z+]{2,30}$)|([\u4e00-\u9fa5+\·?\u4e00-\u9fa5+]{2,30}$))/.test(user)) {
+                    $("#user_tips").text("请输入正确的名字，且不能超过30个字符")
+                    return
+                }
+            }
+        })
+        $("[name='IPaddress']").focus(function () {
+            $("#IPaddress_tips").text("")
+        })
+        $("[name='IPaddress']").blur(function () {
+            IPaddress = $("[name='IPaddress']").val();
+            if (IPaddress != "") {
+                if (!/^((25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d)))\.){3}(25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d)))$/gi.test(IPaddress)) {
+
+                    $("#IPaddress_tips").text("IP地址格式错误");
+
+                    return
+                }
+            }
+        })
+
+        $("[name='purchase_date']").focus(function () {
+            $("#purchase_date_tips").text("")
+        })
+        $("[name='purchase_date']").blur(function () {
+            purchase_date = $("[name='purchase_date']").val();
+            if (purchase_date != "") {
+
+                var purchaseDate = new Date(purchase_date);
+
+                if (purchaseDate > d) {
+                    $("#purchase_date_tips").text("购买日期不能大于当前日期")
+                }
+            }
+        })
+        $("[name='purchase_cost']").focus(function () {
+            $("#purchase_cost_tips").text("")
+        })
+        $("[name='purchase_cost']").blur(function () {
+            purchase_cost = $("[name='purchase_cost']").val();
+            if (purchase_cost != "") {
+
+                if (! /^\d+(\.\d+)?$/g.test(purchase_cost)) {
+                    $("#purchase_cost_tips").text("请输入正确的数字")
+                }
+                purchase_cost_float = parseFloat(purchase_cost)
+            }
+        })
+        // 确定
+        $("#enter").click(function () {
+            asset_number = $("[name='asset_number']").val();
+            name = $("[name='name']").val();
+            model = $("[name='model']").val();
+            parameter = $("[name='parameter']").val();
+            select_cat = $("[name='select_cat'] option:checked").val();
+            select_loc = $("[name='select_loc'] option:checked").val();
+            user = $("[name='user']").val();
+            IPaddress = $("[name='IPaddress']").val();
+            purchase_date = $("[name='purchase_date']").val() ? $("[name='purchase_date']").val() : getDateStr(d);
+            purchase_cost_float = $("[name='purchase_cost']").val() ? parseFloat($("[name='purchase_cost']").val()) : 0;
+            asset_status = $("[name='asset_status']:checked").val()
+
+            if (asset_number != "" && name != "") {
+
+                $.post("{{url_for('office.loc_add')}}", { 'location': location_id, "asset_number": asset_number, "name": name, "model": model, "parameter": parameter, "category": select_cat, "location": select_loc, "user": user, "IPaddress": IPaddress, "purchase_date": purchase_date, "purchase_cost": purchase_cost_float, "asset_status": asset_status }, function (data) {
+                    if (data.code == 0) {
+                        alert(data.msg);
+                        window.location.href = "{{url_for('office.location')}}?location=" + location_id
+
+                    }else{
+                        alert(data.msg);
+                    }
+                })
+            }
+
+        });
+
+    });
+</script>
+{% endblock scripts %}
+{% endblock body %}

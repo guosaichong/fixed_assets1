@@ -1,0 +1,86 @@
+{% extends "bootstrap/base.html" %}
+{% block title %}{% endblock %}
+{% block styles %}
+
+<link href="{{url_for('static',filename='bootstrap/css/bootstrap.css')}}" rel="stylesheet">
+<link href="{{url_for('static',filename='css/base.css')}}" rel="stylesheet">
+{% block mystyles %}
+{% endblock mystyles %}
+{% endblock styles %}
+
+{% block body %}
+
+{% block navbar %}
+<nav class="navbar navbar-default" role="navigation">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#example-navbar-collapse">
+                <span class="sr-only">切换导航</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">IT设备管理</a>
+        </div>
+        <div class="collapse navbar-collapse" id="example-navbar-collapse">
+            <ul class="nav navbar-nav">
+                {% for category in category_list[:6] %}
+                <li {% if category.id==category_id %}class="active" {%endif%}><a
+                        href="{{url_for('office.detail')}}?category={{category.id}}">{{category.name}}</a></li>
+                {%endfor%}
+
+
+                {% if category_list | length >=6%}
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        其它 <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu">
+                        {% for category in category_list[6:] %}
+                        <li {% if category.id==category_id %}class="active" {%endif%}><a href="{{url_for('office.detail')}}?category={{category.id}}">{{category.name}}</a></li>
+                        {%endfor%}
+
+                    </ul>
+                </li>
+                {%endif%}
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                {% if current_user.username %}
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">欢迎 {{current_user.username}}<b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="{{url_for('user.info')}}">用户中心</a></li>
+                        <li><a href="{{url_for('user.mod_password')}}">修改密码</a></li>
+                    </ul>
+                </li>
+                
+                
+                <input type="hidden" name="username" value="{{current_user.username}}">
+                <li><a href="{{url_for('user.logout')}}">注销</a></li>
+                {% else%}
+                <li><a href="{{url_for('user.login')}}">登录</a></li>
+                <li><a href="{{url_for('user.register')}}">注册</a></li>
+                {% endif %}
+            </ul>
+            <form class="navbar-form navbar-right" action="{{url_for('office.search')}}" method="post">
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="输入名称或编号" name="search" required>
+                </div>
+                <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button>
+            </form>
+
+
+        </div>
+    </div>
+</nav>
+{%- endblock navbar %}
+{% block content -%}
+
+{%- endblock content %}
+
+{% block scripts %}
+<script src="{{url_for('static',filename='bootstrap/jquery.js')}}"></script>
+<script src="{{url_for('static',filename='bootstrap/js/bootstrap.js')}}"></script>
+{%- endblock scripts %}
+{%block myscripts%}{%endblock myscripts%}
+{%- endblock body %}

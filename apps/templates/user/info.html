@@ -1,0 +1,154 @@
+{% extends "bootstrap/base.html" %}
+{% block title %}基本资料{% endblock %}
+{%block styles%}
+{{super()}}
+<style>
+    body{
+        padding-top: 70px;
+    }
+    .tips {
+        color: red;
+        font-size: 12px;
+    }
+
+    .col-md2 {
+        min-height: 600px;
+        background-color: rgb(248, 248, 248);
+    }
+
+    .col-md2 ul {
+        list-style: none;
+        -webkit-padding-start: 0px;
+
+    }
+
+    .col-md2 ul li {
+        height: 30px;
+        line-height: 30px;
+
+    }
+</style>
+{%endblock%}
+{%block body%}
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#"><img style="height: 40px;margin-top: -10px;"
+                    src="{{url_for('static',filename='img/logo.png')}}" alt="禹帆物流"></a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="/">首页</a></li>
+                <li><a href="{{url_for('office.detail')}}">IT设备管理</a></li>
+                <li><a href="{{url_for('visitor.visitor_info')}}">访客登记</a></li>
+
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                {% if current_user.username %}
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">欢迎 {{current_user.username}}<b
+                            class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="{{url_for('user.info')}}">用户中心</a></li>
+                        <li><a href="{{url_for('user.mod_password')}}">修改密码</a></li>
+                    </ul>
+                </li>
+
+
+                <input type="hidden" name="username" value="{{current_user.username}}">
+                <li><a href="{{url_for('user.logout')}}">注销</a></li>
+                {% else%}
+                <li><a href="{{url_for('user.login')}}">登录</a></li>
+                <li><a href="{{url_for('user.register')}}">注册</a></li>
+                {% endif %}
+            </ul>
+        </div>
+        <!--/.nav-collapse -->
+    </div>
+</nav>
+<div class="container">
+    <div class="col-md-2 col-sm-2 col-xs-2">
+        <div class="col-md2">
+            <ul>
+                <li><a href="{{url_for('user.info')}}">基本资料</a></li>
+                <li><a href="{{url_for('user.role')}}">用户角色</a></li>
+            </ul>
+        </div>
+
+    </div>
+    <div>
+        <div class="col-md-10 col-sm-10 col-xs-10" style="min-height: 600px;background-color: rgb(248, 248, 248);">
+
+            <div>
+
+                <form class="form-horizontal" action="javascript:;">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">用户名：</label>
+                        <div class="col-sm-5">
+                            <input type="text" name="username" class="form-control"
+                                placeholder="{{current_user.username}}" value="{{current_user.username}}" disabled>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">邮箱：</label>
+                        <div class="col-sm-5">
+                            <input type="email" name="email" class="form-control" placeholder="请输入您的邮箱"
+                                value="{{current_user.email}}" required>
+                            <p id="tips" class="tips"></p>
+                        </div>
+
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-5">
+                            <button type="submit" id="sub-btn" class="btn btn-default">确定</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{%block scripts%}
+{{super()}}
+<script src="{{url_for('static',filename='js/md5.js')}}"></script>
+<script>
+    $(function () {
+        var username = $("[name='username']").val();
+        var email;
+        $("#sub-btn").click(function () {
+            email = $("[name='email']").val();
+            if (email != "") {
+                var re = /^[A-Za-z\d]+([-_.][A-Za-z\d]+)*@([A-Za-z\d]+[.])+[A-Za-z]{2,4}$/;
+                if (re.test(email)) {
+                    $.post("{{url_for('user.info')}}", { username: username, email: email }, function (data) {
+                        console.log(data);
+                        if (data.code == 0) {
+                            alert(data.msg);
+                            
+                        } else {
+                            alert(data.msg);
+                        }
+
+
+                    })
+                } else {
+                    $("#tips").text("邮箱格式不正确");
+                }
+            }
+        })
+
+
+    })
+</script>
+{%endblock scripts%}
+{%endblock%}
