@@ -6,7 +6,7 @@ class DevelopConfig:
     ENV="development"
     DEBUG=True
     # mysql配置
-    SQLALCHEMY_DATABASE_URI = "mysql+pymysql://用户名:密码@localhost/fixed_assets?charset=utf8mb4"
+    SQLALCHEMY_DATABASE_URI = "mysql+pymysql://test:123456@localhost/fixed_assets?charset=utf8mb4"
     
     SQLALCHEMY_ECHO = False
     SQLALCHEMY_POOL_SIZE = 10
@@ -46,4 +46,9 @@ if not os.path.exists(LOG_PATH):
 if not os.path.exists(IMAGES_UPLOAD_PATH):
     os.mkdir(IMAGES_UPLOAD_PATH)
 
+# 新浪邮箱设置
+HOST='smtp.sina.com'
+PORT=465
+ACCOUNT='用户名@sina.com'
+PASSWORD='926f94947f38a12c'
 

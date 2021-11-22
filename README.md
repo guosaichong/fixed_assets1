@@ -4,7 +4,7 @@
 使用方法：
 安装依赖库 pip install -r requirements.txt -i https:pypi.douban.com/simple
 改配置文件，新建一个数据库。
-修改utils.email_serve的配置，用户忘记密码时，邮箱用来给用户发送密码，邮箱设置ACCOUNT，PASSWORD，HOST，PORT
+修改邮箱设置ACCOUNT，PASSWORD，HOST，PORT，用户忘记密码时，邮箱用来给用户发送密码
 生成数据库表
 python run.py db init
 python run.py db migrate
