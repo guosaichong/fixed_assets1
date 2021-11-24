@@ -1,7 +1,6 @@
 import os
-import sys
 from flask import request, render_template
-from settings import DevelopConfig, ProductConfig, LOG_PATH,BASE_PATH
+from settings import DevelopConfig, ProductConfig, LOG_PATH, BASE_PATH
 from apps import create_app
 from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand

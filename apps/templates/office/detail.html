@@ -31,15 +31,18 @@
         font-size: 13px;
     }
 
+    .design a:hover {
+        text-decoration: none;
+        color: #fff;
+        background: rgb(232, 231, 227);
+    }
+
     h2.left {
-        color: #404040;
-        background-color: rgb(248, 248, 248);
         font-size: 120%;
-        margin-bottom: 4px;
-        padding-bottom: 0;
-        margin-top: 0;
-        padding-top: 0;
+        margin: 0px;
         font-weight: 700;
+        padding: 10px 4px;
+        background: #ddd;
     }
 
     body {
@@ -106,18 +109,18 @@
                             <h2 class="left">所属类别<span class="left_h2"></span></h2>
                             {% for cat in category_list %}
                             <a href="{{url_for('office.detail')}}?category={{cat.id}}" {% if cat_name==cat.name
-                                %}style="color:red;" {%endif%}>
+                                %}style="background:rgb(231,231,231);" {%endif%} title="{{cat.name}}">
                                 {{cat.name}}</a>
                             {% endfor %}
                             <h2 class="left">所属部门<span class="left_h2"></span></h2>
                             {% for dep in dep_list %}
-                            <a href="{{url_for('office.department')}}?department={{dep.id}}">
+                            <a href="{{url_for('office.department')}}?department={{dep.id}}" title="{{dep.name}}">
                                 {{dep.name}}</a>
                             {% endfor %}
 
-                            <h2 class="left" style="margin-top:4px">存放位置<span class="left_h2"></span></h2>
+                            <h2 class="left">存放位置<span class="left_h2"></span></h2>
                             {% for loc in loc_list %}
-                            <a href="{{url_for('office.location')}}?location={{loc.id}}">
+                            <a href="{{url_for('office.location')}}?location={{loc.id}}" title="{{loc.name}}">
                                 {{loc.name}}</a>
                             {% endfor %}
 
@@ -246,33 +249,33 @@
 
                     <ul class="pagination">
                         {% if pagination.has_prev %}
-                            <li><a
-                                    href="{{url_for('office.detail')}}?category={{category_id}}&page={{pagination.prev_num}}">&laquo;</a>
-                            </li>
+                        <li><a
+                                href="{{url_for('office.detail')}}?category={{category_id}}&page={{pagination.prev_num}}">&laquo;</a>
+                        </li>
                         {%else%}
-                            <li class="disabled"><span>&laquo;</span></li>
+                        <li class="disabled"><span>&laquo;</span></li>
                         {%endif%}
                         {% for i in pagination.iter_pages() %}
-                            {%if i%}
-                                {%if pagination.page==i%}
-                                    <li class="active">
-                                        <span>{{i}} <span class="sr-only">(current)</span></span>
-                                    </li>
-                                {%else%}
-                                    <li><a href="{{url_for('office.detail')}}?category={{category_id}}&page={{i}}">{{i}} <span
-                                                class="sr-only">(current)</span></a>
-                                    </li>
-                                {%endif%}
-                            {%else%}
-                                <li><span>...</span></li>
-                            {%endif%}
+                        {%if i%}
+                        {%if pagination.page==i%}
+                        <li class="active">
+                            <span>{{i}} <span class="sr-only">(current)</span></span>
+                        </li>
+                        {%else%}
+                        <li><a href="{{url_for('office.detail')}}?category={{category_id}}&page={{i}}">{{i}} <span
+                                    class="sr-only">(current)</span></a>
+                        </li>
+                        {%endif%}
+                        {%else%}
+                        <li><span>...</span></li>
+                        {%endif%}
                         {%endfor%}
                         {% if pagination.has_next %}
-                            <li><a
-                                    href="{{url_for('office.detail')}}?category={{category_id}}&page={{pagination.next_num}}">&raquo;</a>
-                            </li>
+                        <li><a
+                                href="{{url_for('office.detail')}}?category={{category_id}}&page={{pagination.next_num}}">&raquo;</a>
+                        </li>
                         {%else%}
-                            <li class="disabled"><span>&raquo;</span></li>
+                        <li class="disabled"><span>&raquo;</span></li>
                         {%endif%}
                     </ul>
                 </div>
