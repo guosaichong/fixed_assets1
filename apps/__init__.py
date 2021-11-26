@@ -4,6 +4,7 @@ from .utils.content_serve import byte2str,datetime2date
 from .office.view import office_bp
 from .public.view import public_bp
 from .user.view import user_bp
+from .upload.view import upload_bp
 from .visitor.view import visitor_bp
 from flask import Flask
 from .exts import bootstrap,db,login_manager
@@ -26,5 +27,6 @@ def create_app(class_name):
     app.register_blueprint(public_bp)
     app.register_blueprint(user_bp)
     app.register_blueprint(visitor_bp)
+    app.register_blueprint(upload_bp)
     print(app.url_map)
     return app

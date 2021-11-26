@@ -44,7 +44,7 @@ def upload_image():
     upload_file=request.files.get("file")
     suffix=upload_file.filename.split(".")[-1]
     # print(suffix)
-    filename=str(uuid4())+"."+suffix
+    filename=uuid4().hex+"."+suffix
     upload_file.save(IMAGES_UPLOAD_PATH+os.sep+filename)
     RET={
         "location":request.host_url+"file/"+ filename

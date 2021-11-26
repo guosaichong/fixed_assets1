@@ -28,6 +28,11 @@
                 <li><a href="{{url_for('office.detail')}}">IT设备管理</a></li>
                 <li class="active"><a href="{{url_for('visitor.visitor_info')}}">访客查询</a></li>
                 <li><a href="{{url_for('visitor.unloading')}}">卸货查询</a></li>
+                {%if current_user.username=="18102176668"%}
+                <li><a href="{{url_for('public.edit_news')}}">发表文章</a></li>
+                <li><a href="{{url_for('upload.upload')}}">上传文件</a></li>
+                {%endif%}
+                <li><a href="{{url_for('upload.software')}}">下载文件</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 {% if current_user.username %}
@@ -66,11 +71,13 @@
         </div>
     </div>
     {% if pagination.total==0 %}
-    <div style="background-color: #fff;border-style: solid;border-color: #e7e7e7;border-width: 1px;border-left: none;border-right: none;min-height: 600px;margin-top: 15px;">
+    <div
+        style="background-color: #fff;border-style: solid;border-color: #e7e7e7;border-width: 1px;border-left: none;border-right: none;min-height: 600px;margin-top: 15px;">
         <p>当前没有数据，请稍后查询！</p>
     </div>
     {%else%}
-    <div style="background-color: #fff;border-style: solid;border-color: #e7e7e7;border-width: 1px;border-left: none;border-right: none;min-height: 600px;margin-top: 15px;">
+    <div
+        style="background-color: #fff;border-style: solid;border-color: #e7e7e7;border-width: 1px;border-left: none;border-right: none;min-height: 600px;margin-top: 15px;">
         <div class="table-responsive">
             <table class="table">
                 <thead>
@@ -96,17 +103,16 @@
                     {%endfor%}
                 </tbody>
             </table>
-            
-            
+
+
         </div>
-        
+
     </div>
     <div class="page_selector" style="text-align: center;">
 
         <ul class="pagination">
             {% if pagination.has_prev %}
-            <li><a
-                    href="{{url_for('visitor.visitor_info')}}?date={{date}}&page={{pagination.prev_num}}">&laquo;</a>
+            <li><a href="{{url_for('visitor.visitor_info')}}?date={{date}}&page={{pagination.prev_num}}">&laquo;</a>
             </li>
             {%else%}
             <li class="disabled"><span>&laquo;</span></li>
@@ -127,8 +133,7 @@
             {%endif%}
             {%endfor%}
             {% if pagination.has_next %}
-            <li><a
-                    href="{{url_for('visitor.visitor_info')}}?date={{date}}&page={{pagination.next_num}}">&raquo;</a>
+            <li><a href="{{url_for('visitor.visitor_info')}}?date={{date}}&page={{pagination.next_num}}">&raquo;</a>
             </li>
             {%else%}
             <li class="disabled"><span>&raquo;</span></li>
@@ -136,9 +141,9 @@
         </ul>
     </div>
     {%endif%}
-        
-        
-    
+
+
+
 
 </div> <!-- /container -->
 
@@ -152,12 +157,12 @@
 {%block scripts%}
 {{super()}}
 <script>
-    $(function(){
+    $(function () {
         var search_date = $("#date").val();
-        $("#search-btn").click(function(){
+        $("#search-btn").click(function () {
             search_date = $("#date").val();
-            $.get("{{url_for('visitor.visitor_info')}}?date="+search_date,{date:search_date},function(){
-                window.location.href="{{url_for('visitor.visitor_info')}}?date="+search_date
+            $.get("{{url_for('visitor.visitor_info')}}?date=" + search_date, { date: search_date }, function () {
+                window.location.href = "{{url_for('visitor.visitor_info')}}?date=" + search_date
             })
 
         })

@@ -1,0 +1,171 @@
+{%extends "bootstrap/base.html"%}
+{%block title%}下载文件{%endblock%}
+{%block styles%}
+{{super()}}
+<style>
+    body {
+        padding-top: 60px;
+    }
+
+    .software,
+    .document,
+    .temp {
+        border: 1px solid #e4e8ee;
+        background-color: #fff;
+        font-size: 14px;
+        display: flex;
+        margin-bottom: 10px;
+    }
+
+    .cate-link {
+        height: 30px;
+        line-height: 30px;
+        font-weight: 400;
+        margin-bottom: 10px;
+    }
+
+    .cate-title {
+        width: 96px;
+        padding-left: 23px;
+        text-align: left;
+        font-weight: 400;
+        font-size: 14px;
+        margin: 0px;
+        height: 30px;
+        line-height: 30px;
+    }
+
+    .cate-title a {
+        color: #0c6ad4;
+        text-decoration: none;
+    }
+
+    .cate-list {
+        flex: 1;
+        display: flex;
+        flex-wrap: wrap;
+        /* justify-content: space-around; */
+    }
+
+    .cate-list li {
+        display: flex;
+        width: 136px;
+        height: 30px;
+        text-align: left;
+        line-height: 30px;
+    }
+
+    .cate-list li a {
+        position: relative;
+        display: inline-block;
+        margin-left: 4px;
+        white-space: pre;
+        text-decoration: none;
+        color: #333;
+    }
+
+    .cate-list li a:hover {
+        color: steelblue;
+        text-decoration: underline;
+    }
+</style>
+{%endblock styles%}
+{%block body%}
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#"><img style="height: 40px;margin-top: -10px;"
+                    src="{{url_for('static',filename='img/logo.png')}}" alt="禹帆物流"></a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="/">首页</a></li>
+                <li><a href="{{url_for('office.detail')}}">IT设备管理</a></li>
+                <li><a href="{{url_for('visitor.visitor_info')}}">访客查询</a></li>
+                <li><a href="{{url_for('visitor.unloading')}}">卸货查询</a></li>
+                {%if current_user.username=="18102176668"%}
+                <li><a href="{{url_for('public.edit_news')}}">发表文章</a></li>
+                <li><a href="{{url_for('upload.upload')}}">上传文件</a></li>
+                {%endif%}
+                <li class="active"><a href="{{url_for('upload.software')}}">下载文件</a></li>
+
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                {% if current_user.username %}
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">欢迎 {{current_user.username}}<b
+                            class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="{{url_for('user.info')}}">用户中心</a></li>
+                        <li><a href="{{url_for('user.mod_password')}}">修改密码</a></li>
+                    </ul>
+                </li>
+
+
+                <input type="hidden" name="username" value="{{current_user.username}}">
+                <li><a href="{{url_for('user.logout')}}">注销</a></li>
+                {% else%}
+                <li><a href="{{url_for('user.login')}}">登录</a></li>
+                <li><a href="{{url_for('user.register')}}">注册</a></li>
+                {% endif %}
+            </ul>
+        </div>
+        <!--/.nav-collapse -->
+    </div>
+</nav>
+<div class="container">
+    <div class="software">
+        <div class="cate-link">
+            <h3 class="cate-title"><a href="">办公软件</a></h3>
+        </div>
+        <div class="cate-list">
+
+            {%for i in soft_list%}
+            <li><a href="{{url_for('upload.download_software',folder='办公软件',filename=i)}}" title="{{i}}">{%if
+                    i|length>13%}{{i[:13]+"..."}}{%else%}{{i}}{%endif%}</a></li>
+            {%endfor%}
+
+
+        </div>
+    </div>
+    <div class="document">
+        <div class="cate-link">
+            <h3 class="cate-title"><a href="">常用文件</a></h3>
+        </div>
+        <div class="cate-list">
+
+            {%for i in docu_list%}
+            <li><a href="{{url_for('upload.download_software',folder='常用文件',filename=i)}}" title="{{i}}">{%if
+                    i|length>13%}{{i[:13]+"..."}}{%else%}{{i}}{%endif%}</a></li>
+            {%endfor%}
+
+
+        </div>
+
+    </div>
+    <div class="temp">
+        <div class="cate-link">
+            <h3 class="cate-title"><a href="">临时文件</a></h3>
+        </div>
+        <div class="cate-list">
+
+            {%for i in temp_list%}
+            <li><a href="{{url_for('upload.download_software',folder='临时文件',filename=i)}}" title="{{i}}">{%if
+                    i|length>13%}{{i[:13]+"..."}}{%else%}{{i}}{%endif%}</a></li>
+            {%endfor%}
+
+
+        </div>
+    </div>
+</div>
+{%block scripts%}
+{{super()}}
+{%endblock scripts%}
+{%endblock body%}

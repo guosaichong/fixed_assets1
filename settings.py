@@ -40,13 +40,21 @@ class ProductConfig:
 BASE_PATH = os.path.dirname(os.path.abspath(__file__))
 LOG_PATH = os.path.join(BASE_PATH, "logs")
 IMAGES_UPLOAD_PATH = os.path.join(BASE_PATH, "images_upload")
+File_UPLOAD_PATH = os.path.join(BASE_PATH, "files_upload")
 if not os.path.exists(LOG_PATH):
     os.mkdir(LOG_PATH)
 if not os.path.exists(IMAGES_UPLOAD_PATH):
     os.mkdir(IMAGES_UPLOAD_PATH)
-
+if not os.path.exists(File_UPLOAD_PATH):
+    os.mkdir(File_UPLOAD_PATH)
+if not os.path.exists(os.path.join(File_UPLOAD_PATH,"办公软件")):
+    os.mkdir(os.path.join(File_UPLOAD_PATH,"办公软件"))
+if not os.path.exists(os.path.join(File_UPLOAD_PATH,"常用文件")):
+    os.mkdir(os.path.join(File_UPLOAD_PATH,"常用文件"))
+if not os.path.exists(os.path.join(File_UPLOAD_PATH,"临时文件")):
+    os.mkdir(os.path.join(File_UPLOAD_PATH,"临时文件"))
 # 新浪邮箱设置
 HOST = 'smtp.sina.com'
 PORT = 465
-ACCOUNT = 'gsc21@sina.com'
+ACCOUNT = '用户名@sina.com'
 PASSWORD = '926f94947f38a12c'

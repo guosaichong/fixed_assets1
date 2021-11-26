@@ -1,7 +1,7 @@
 import datetime
 from flask_wtf import FlaskForm
 from wtforms.fields.core import DateField, SelectField, StringField
-from wtforms.fields.simple import SubmitField
+from wtforms.fields.simple import FileField, SubmitField
 from wtforms.validators import DataRequired, Length, Regexp, ValidationError
 from flask import session
 from ..exts import db
@@ -10,6 +10,9 @@ from sqlalchemy import and_
 
 
 class AccessForm(FlaskForm):
+    """
+    访客登记的表单
+    """
     visitor_name = StringField("姓名:", validators=[DataRequired()],
                                render_kw={"placeholder": "请输入您的姓名", "class": "form-control"})
     phone = StringField("手机号:", validators=[DataRequired()],
@@ -31,6 +34,10 @@ class AccessForm(FlaskForm):
 
 
 class CarForm(FlaskForm):
+    """
+    卸货登记的表单
+    """
+
     def __init__(self):
         FlaskForm.__init__(self)
         unloading_time_list = UnloadingTime.query.filter(and_(UnloadingTime.time > datetime.datetime.now(
@@ -62,3 +69,11 @@ class CarForm(FlaskForm):
         # print(field.data)
         if session.get("unloading_code").lower() != self.verify_code.data.lower():
             raise ValidationError("验证码错误")
+
+
+class UploadForm(FlaskForm):
+    """
+    上传文件的表单
+    """
+    file = FileField(validators=[DataRequired()])
+    submit = SubmitField(render_kw={"value":"上传","class": "form-control"})
