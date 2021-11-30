@@ -1,57 +1,60 @@
 {%extends "bootstrap/base.html"%}
 {% block title %}访客登记{% endblock title %}
+{%block styles%}
+{{super()}}
+<style>
+	#visitor_tips,
+	#phone_tips,
+	#license_number_tips,
+	#supplier_tips,
+	#logistics_company_tips,
+	#verify_code_tips {
+		color: red;
+	}
+</style>
+{%endblock styles%}
 {% block content -%}
 
 <div class="container">
 	<h2>来访人员请填写以下信息</h2>
 	<form action="{{url_for('visitor.access')}}" method="POST">
-		<div>
+		<div class="form-group">
 			{{form.hidden_tag()}}
 		</div>
 
-		<div>
+		<div class="form-group">
 			{{form.visitor_name.label}}{{form.visitor_name}}
-			{%for message in form.visitor_name.errors%}
-			<p>{{message}}</p>
-			{%endfor%}
-			<p id="visitor_tips"></p>
+
+			<p id="visitor_tips">{{form.visitor_name.errors[0]}}</p>
 		</div>
-		<div>
+		<div class="form-group">
 			{{form.phone.label}}{{form.phone}}
-			{%for message in form.phone.errors%}
-			<p>{{message}}</p>
-			{%endfor%}
-			<p id="phone_tips"></p>
+
+			<p id="phone_tips">{{form.phone.errors[0]}}</p>
+
 		</div>
-		<div>
+		<div class="form-group">
 			{{form.license_number.label}}{{form.license_number}}
-			{%for message in form.license_number.errors%}
-			<p>{{message}}</p>
-			{%endfor%}
-			<p id="license_number_tips"></p>
+
+			<p id="license_number_tips">{{form.license_number.errors[0]}}</p>
 		</div>
-		<div>
+		<div class="form-group">
 			{{form.supplier.label}}{{form.supplier}}
-			{%for message in form.supplier.errors%}
-			<p>{{message}}</p>
-			{%endfor%}
-			<p id="supplier_tips"></p>
+
+			<p id="supplier_tips">{{form.supplier.errors[0]}}</p>
 		</div>
-		<div>
+		<div class="form-group">
 			{{form.logistics_company.label}}{{form.logistics_company}}
-			{%for message in form.logistics_company.errors%}
-			<p>{{message}}</p>
-			{%endfor%}
-			<p id="logistics_company_tips"></p>
+
+			<p id="logistics_company_tips">{{form.logistics_company.errors[0]}}</p>
 		</div>
-		<div>
+		<div class="form-group">
 			{{form.verify_code.label}}
 			<img src="{{url_for('visitor.get_access_code')}}" alt="" srcset="" id="myImg"> {{form.verify_code}}
 
-			<p id="verify_code_tips" style="color: red;">{%if form.verify_code.errors
-				%}{{form.verify_code.errors[0]}}{%endif%}</p>
+			<p id="verify_code_tips">{{form.verify_code.errors[0]}}</p>
 		</div>
-		<div>
+		<div class="form-group">
 			{{form.submit}}
 		</div>
 
@@ -95,7 +98,6 @@
 
 			} else {
 				visitor_name_tips.innerHTML = '请输入正确的名字！'
-				visitor_name_tips.style.color = 'red'
 
 
 			}
@@ -121,7 +123,6 @@
 
 			} else {
 				phone_tips.innerHTML = '请输入正确的手机号！'
-				phone_tips.style.color = 'red'
 
 
 			}
@@ -151,7 +152,6 @@
 
 			} else {
 				license_number_tips.innerHTML = '请输入正确的车牌号！'
-				license_number_tips.style.color = 'red'
 
 
 			}
@@ -177,7 +177,6 @@
 
 			} else {
 				supplier_tips.innerHTML = '请输入正确的供应商名称！'
-				supplier_tips.style.color = 'red'
 
 
 			}
@@ -203,7 +202,6 @@
 
 			} else {
 				logistics_company_tips.innerHTML = '请输入正确的物流公司名称！'
-				logistics_company_tips.style.color = 'red'
 
 
 			}

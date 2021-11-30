@@ -3,10 +3,6 @@
 {% block styles %}
 {{super()}}
 <style>
-    body {
-        padding-top: 70px;
-    }
-
     .left-column {
         background-color: rgb(248, 248, 248);
         min-height: 600px;
@@ -15,7 +11,7 @@
     .sidebar-box {
         background: rgb(248, 248, 248);
         padding: 4px;
-        
+
     }
 
     .design {
@@ -35,15 +31,22 @@
         font-size: 13px;
     }
 
+    .design a:hover {
+        text-decoration: none;
+        color: rgb(75,177,229);
+        background: rgb(232, 231, 227);
+    }
+
     h2.left {
-        color: #404040;
-        background-color: rgb(248, 248, 248);
         font-size: 120%;
-        margin-bottom: 4px;
-        padding-bottom: 0;
-        margin-top: 0;
-        padding-top: 0;
+        margin: 0px;
         font-weight: 700;
+        padding: 10px 4px;
+        background: #ddd;
+    }
+
+    body {
+        padding-top: 70px;
     }
 </style>
 {% endblock styles %}
@@ -110,7 +113,7 @@
                             <h2 class="left">所属部门<span class="left_h2"></span></h2>
                             {% for dep in dep_list %}
                             <a href="{{url_for('office.department')}}?department={{dep.id}}" {% if
-                                department_name==dep.name %}style="color:red;" {%endif%}>
+                                department_name==dep.name %}style="background:rgb(231,231,231);" {%endif%}>
                                 {{dep.name}}</a>
                             {% endfor %}
 
@@ -155,7 +158,8 @@
 
                     </div>
                 </div>
-                <div class="table-responsive" style="margin-top: 15px;border-style: solid;border-color: #e7e7e7;border-width: 1px;border-left: none;border-right: none;min-height: 600px;">
+                <div class="table-responsive"
+                    style="margin-top: 15px;border-style: solid;border-color: #e7e7e7;border-width: 1px;border-left: none;border-right: none;min-height: 600px;">
                     <table class="table">
 
                         <thead>

@@ -13,15 +13,15 @@ class AccessForm(FlaskForm):
     """
     访客登记的表单
     """
-    visitor_name = StringField("姓名:", validators=[DataRequired()],
+    visitor_name = StringField("姓名:", validators=[DataRequired(), Length(2, 16, message="长度为2-16位"), Regexp(r"^(([a-zA-Z+\.?\·?a-zA-Z+]{2,16}$)|([\u4e00-\u9fa5+\·?\u4e00-\u9fa5+]{2,16}$))", message="格式不正确")],
                                render_kw={"placeholder": "请输入您的姓名", "class": "form-control"})
-    phone = StringField("手机号:", validators=[DataRequired()],
+    phone = StringField("手机号:", validators=[DataRequired(), Length(11, 11, message="长度为11位"), Regexp(r"^1[3456789]\d{9}$", message="格式不正确")],
                         render_kw={"placeholder": "请输入您的手机号", "class": "form-control"})
-    license_number = StringField("车牌号:", validators=[DataRequired()],
+    license_number = StringField("车牌号:", validators=[DataRequired(), Length(7, 10, message="长度为7-10位"), Regexp(r"^[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领A-Z]{1}[A-Z]{1}[A-Z0-9]{4}[A-Z0-9挂学警港澳]{1}$", message="格式不正确")],
                                  render_kw={"placeholder": "请输入您的车牌号", "class": "form-control"})
-    supplier = StringField("供应商:", validators=[DataRequired()],
+    supplier = StringField("供应商:", validators=[DataRequired(), Length(2, 30, message="长度为2-30位"), Regexp(r"^[\u4e00-\u9fa5A-Za-z0-9]{2,30}$", message="格式不正确")],
                            render_kw={"placeholder": "请输入您的供应商", "class": "form-control"})
-    logistics_company = StringField("物流公司:", validators=[DataRequired()],
+    logistics_company = StringField("物流公司:", validators=[DataRequired(), Length(2, 30, message="长度为2-30位"), Regexp(r"^[\u4e00-\u9fa5A-Za-z0-9]{2,30}$", message="格式不正确")],
                                     render_kw={"placeholder": "请输入您的物流公司", "class": "form-control"})
     verify_code = StringField(label="验证码:", validators=[DataRequired()],
                               render_kw={"placeholder": "请输入验证码", "class": "form-control"})
@@ -46,14 +46,14 @@ class CarForm(FlaskForm):
         self.car_type.choices = [(i.id, i.name)for i in cartype_list]
         self.scheduled_unloading_time.choices = [
             (i.time, i.time)for i in unloading_time_list]
-    supplier = StringField("供应商名称:", validators=[DataRequired()],
+    supplier = StringField("供应商名称:", validators=[DataRequired(), Length(2, 30, message="长度为2-30位"), Regexp(r"^[\u4e00-\u9fa5A-Za-z0-9]{2,30}$", message="格式不正确")],
                            render_kw={"placeholder": "请输入您的供应商名称", "class": "form-control"})
 
-    delivery_contact = StringField("送货联系人:", validators=[DataRequired()],
+    delivery_contact = StringField("送货联系人:", validators=[DataRequired(), Length(2, 16, message="长度为2-16位"), Regexp(r"^(([a-zA-Z+\.?\·?a-zA-Z+]{2,16}$)|([\u4e00-\u9fa5+\·?\u4e00-\u9fa5+]{2,16}$))", message="格式不正确")],
                                    render_kw={"placeholder": "请输入送货司机的姓名", "class": "form-control"})
-    phone = StringField("送货手机号:", validators=[DataRequired()],
+    phone = StringField("送货手机号:", validators=[DataRequired(), Length(11, 11, message="长度为11位"), Regexp(r"^1[3456789]\d{9}$", message="格式不正确")],
                         render_kw={"placeholder": "请输入送货司机的手机号", "class": "form-control"})
-    license_number = StringField("送货车牌号:", validators=[DataRequired()],
+    license_number = StringField("送货车牌号:", validators=[DataRequired(), Length(7, 10, message="长度为7-10位"), Regexp(r"^[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领A-Z]{1}[A-Z]{1}[A-Z0-9]{4}[A-Z0-9挂学警港澳]{1}$", message="格式不正确")],
                                  render_kw={"placeholder": "请输入送货司机的车牌号", "class": "form-control"})
     car_type = SelectField("送货车辆类型:", validators=[DataRequired()], render_kw={
                            "class": "form-control"}, coerce=int)
@@ -76,4 +76,4 @@ class UploadForm(FlaskForm):
     上传文件的表单
     """
     file = FileField(validators=[DataRequired()])
-    submit = SubmitField(render_kw={"value":"上传","class": "form-control"})
+    submit = SubmitField(render_kw={"value": "上传", "class": "form-control"})

@@ -1,0 +1,153 @@
+{%extends "bootstrap/base.html"%}
+{%block title%}{%if type==1%}行业动态{%elif type==2%}公司新闻{%else%}放假通知{%endif%}{%endblock%}
+{%block styles%}
+{{super()}}
+<style>
+    body {
+        padding-top: 60px;
+    }
+
+    .left-content {
+        min-height: 650px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+
+    .news-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px dotted #eee;
+    }
+
+    .page_selector {
+        text-align: center;
+    }
+</style>
+{%endblock styles%}
+{%block body%}
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#"><img style="height: 40px;margin-top: -10px;"
+                    src="{{url_for('static',filename='img/logo.png')}}" alt="禹帆物流"></a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="/">首页</a></li>
+                <li><a href="{{url_for('office.detail')}}">IT设备管理</a></li>
+                <li><a href="{{url_for('visitor.visitor_info')}}">访客查询</a></li>
+                <li><a href="{{url_for('visitor.unloading')}}">卸货查询</a></li>
+                {%if current_user.username=="18102176668"%}
+                <li><a href="{{url_for('public.edit_news')}}">发表文章</a></li>
+                <li><a href="{{url_for('upload.upload')}}">上传文件</a></li>
+                {%endif%}
+                <li><a href="{{url_for('upload.software')}}">下载文件</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right hidden-sm">
+                {% if current_user.username %}
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">欢迎 {{current_user.username}}<b
+                            class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="{{url_for('user.info')}}">用户中心</a></li>
+                        <li><a href="{{url_for('user.mod_password')}}">修改密码</a></li>
+                    </ul>
+                </li>
+
+
+                <input type="hidden" name="username" value="{{current_user.username}}">
+                <li><a href="{{url_for('user.logout')}}">注销</a></li>
+                {% else%}
+                <li><a href="{{url_for('user.login')}}">登录</a></li>
+                <li><a href="{{url_for('user.register')}}">注册</a></li>
+                {% endif %}
+            </ul>
+        </div>
+        <!--/.nav-collapse -->
+    </div>
+</nav>
+
+<div class="container">
+    <div class="row content">
+        <div class="col-xs-12 col-md-8 left-content">
+            {% if pagination.total==0 %}
+            <div>
+                <p>当前没有数据</p>
+            </div>
+            {%else%}
+            <div>
+                {%for item in pagination.items%}
+                <a href="{{url_for('public.news',id=item.id)}}">
+                    <div class="news-item">
+
+                        <h4>{{item.title}}</h4>
+                        <span>{{datetime2date(item.create_time)}}</span>
+
+
+                    </div>
+                </a>
+                {%endfor%}
+            </div>
+
+
+
+            <div class="page_selector">
+
+                <ul class="pagination">
+                    {% if pagination.has_prev %}
+                    <li><a href="{{url_for('public.news_list',type=type)}}?page={{pagination.prev_num}}">&laquo;</a>
+                    </li>
+                    {%else%}
+                    <li class="disabled"><span>&laquo;</span></li>
+                    {%endif%}
+                    {% for i in pagination.iter_pages() %}
+                    {%if i%}
+                    {%if pagination.page==i%}
+                    <li class="active">
+                        <span>{{i}} <span class="sr-only">(current)</span></span>
+                    </li>
+                    {%else%}
+                    <li><a href="{{url_for('public.news_list',type=type)}}?page={{i}}">{{i}} <span
+                                class="sr-only">(current)</span></a>
+                    </li>
+                    {%endif%}
+                    {%else%}
+                    <li><span>...</span></li>
+                    {%endif%}
+                    {%endfor%}
+                    {% if pagination.has_next %}
+                    <li><a href="{{url_for('public.news_list',type=type)}}?page={{pagination.next_num}}">&raquo;</a>
+                    </li>
+                    {%else%}
+                    <li class="disabled"><span>&raquo;</span></li>
+                    {%endif%}
+                </ul>
+            </div>
+
+
+
+            {%endif%}
+        </div>
+        <div class="col-md-4 hidden-xs hidden-sm"></div>
+    </div>
+
+    <hr>
+
+    <footer>
+        <p>&copy; 2021 YufanLogistics</p>
+    </footer>
+</div> <!-- /container -->
+{%block scripts%}
+{{super()}}
+{%endblock scripts%}
+{%endblock body%}

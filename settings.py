@@ -56,5 +56,5 @@ if not os.path.exists(os.path.join(File_UPLOAD_PATH,"临时文件")):
 # 新浪邮箱设置
 HOST = 'smtp.sina.com'
 PORT = 465
-ACCOUNT = '用户名@sina.com'
+ACCOUNT = 'gsc21@sina.com'
 PASSWORD = '926f94947f38a12c'

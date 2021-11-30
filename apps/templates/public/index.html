@@ -122,7 +122,7 @@
               n.title|length>18%}...{%endif%}</span><span>{{datetime2date(n.create_time)}}</span></a></div>
         {%endfor%}
       </div>
-      <p><a class="btn btn-default" href="#" role="button">更多... &raquo;</a></p>
+      <p><a class="btn btn-default" href="{{url_for('public.news_list',type=industry_type_id)}}" role="button">更多... &raquo;</a></p>
     </div>
     <div class="col-md-4">
       <h2>公司新闻</h2>
@@ -133,7 +133,7 @@
               n.title|length>18%}...{%endif%}</span><span>{{datetime2date(n.create_time)}}</span></a></div>
         {%endfor%}
       </div>
-      <p><a class="btn btn-default" href="#" role="button">更多... &raquo;</a></p>
+      <p><a class="btn btn-default" href="{{url_for('public.news_list',type=company_type_id)}}" role="button">更多... &raquo;</a></p>
     </div>
     <div class="col-md-4">
       <h2>放假通知</h2>
@@ -144,7 +144,7 @@
               n.title|length>18%}...{%endif%}</span><span>{{datetime2date(n.create_time)}}</span></a></div>
         {%endfor%}
       </div>
-      <p><a class="btn btn-default" href="#" role="button">更多... &raquo;</a></p>
+      <p><a class="btn btn-default" href="{{url_for('public.news_list',type=notice_type_id)}}" role="button">更多... &raquo;</a></p>
     </div>
   </div>
 
