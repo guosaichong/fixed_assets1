@@ -30,9 +30,18 @@ class Visitor(db.Model):
 
 class UnloadingTime(db.Model):
     """
-    记录一些时间，供用户选择，需要手动添加数据
+    记录一些时间，供用户选择，需要手动添加数据，一号库使用
     """
     __tablename__ = "unloading_time"
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    time = db.Column(DateTime, nullable=False)
+    selected = db.Column(db.Boolean, server_default=text('0'), nullable=False)
+
+class UnloadingTime2(db.Model):
+    """
+    记录一些时间，供用户选择，需要手动添加数据，二号库使用
+    """
+    __tablename__ = "unloading_time2"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     time = db.Column(DateTime, nullable=False)
     selected = db.Column(db.Boolean, server_default=text('0'), nullable=False)
@@ -49,6 +58,7 @@ class Unloading(db.Model):
     license_number = db.Column(db.String(10), nullable=False)
     car_type_id=db.Column(db.Integer,db.ForeignKey("cartype.id"),nullable=False)
     unloading_time=db.Column(DateTime,nullable=False)
+    unloading_point_id=db.Column(db.Integer,db.ForeignKey("warehouse.id"),nullable=False)
 class CarType(db.Model):
     """
     货车车型
@@ -56,3 +66,11 @@ class CarType(db.Model):
     __tablename__="cartype"
     id=  db.Column(db.Integer, primary_key=True, autoincrement=True) 
     name = db.Column(db.String(16), nullable=False)
+
+class Warehouse(db.Model):
+    """
+    仓库表
+    """
+    __tablename__="warehouse"
+    id=  db.Column(db.Integer, primary_key=True, autoincrement=True) 
+    name=db.Column(db.String(16),nullable=False)

@@ -1,13 +1,14 @@
 {%extends "bootstrap/base.html"%}
-{% block title %}访客登记{% endblock title %}
+{% block title %}二号库卸货窗口预约{% endblock title %}
 {%block styles%}
 {{super()}}
 <style>
-	#visitor_tips,
+	#supplier_tips,
+	#delivery_contact_tips,
 	#phone_tips,
 	#license_number_tips,
-	#supplier_tips,
-	#logistics_company_tips,
+	#car_type_tips,
+	#scheduled_unloading_time_tips,
 	#verify_code_tips {
 		color: red;
 	}
@@ -16,41 +17,42 @@
 {% block content -%}
 
 <div class="container">
-	<h2>来访人员请填写以下信息</h2>
-	<form action="{{url_for('visitor.access')}}" method="POST" onsubmit="return checkSubmit();">
+	<h2>二号库卸货窗口预约</h2>
+	<form action="{{url_for('visitor.appoint')}}" method="POST" onsubmit="return checkSubmit();">
 		<div class="form-group">
 			{{form.hidden_tag()}}
 		</div>
-
 		<div class="form-group">
-			{{form.visitor_name.label}}{{form.visitor_name}}
-
-			<p id="visitor_tips">{{form.visitor_name.errors[0]}}</p>
+			{{form.supplier.label}}{{form.supplier}}
+			<p id="supplier_tips">{{form.supplier.errors[0]}}</p>
+		</div>
+		<div class="form-group">
+			{{form.delivery_contact.label}}{{form.delivery_contact}}
+			<p id="delivery_contact_tips">{{form.delivery_contact.errors[0]}}</p>
 		</div>
 		<div class="form-group">
 			{{form.phone.label}}{{form.phone}}
 
 			<p id="phone_tips">{{form.phone.errors[0]}}</p>
-
 		</div>
 		<div class="form-group">
 			{{form.license_number.label}}{{form.license_number}}
 
 			<p id="license_number_tips">{{form.license_number.errors[0]}}</p>
 		</div>
-		<div class="form-group">
-			{{form.supplier.label}}{{form.supplier}}
 
-			<p id="supplier_tips">{{form.supplier.errors[0]}}</p>
+		<div class="form-group">
+			{{form.car_type.label}}{{form.car_type}}
+			<p id="car_type_tips">{{form.car_type.errors[0]}}</p>
 		</div>
 		<div class="form-group">
-			{{form.logistics_company.label}}{{form.logistics_company}}
+			{{form.scheduled_unloading_time.label}}{{form.scheduled_unloading_time}}
 
-			<p id="logistics_company_tips">{{form.logistics_company.errors[0]}}</p>
+			<p id="scheduled_unloading_time_tips">{{form.scheduled_unloading_time.errors[0]}}</p>
 		</div>
 		<div class="form-group">
 			{{form.verify_code.label}}
-			<img src="{{url_for('visitor.get_access_code')}}" alt="" srcset="" id="myImg"> {{form.verify_code}}
+			<img src="{{url_for('visitor.get_unloading_code2')}}" alt="" srcset="" id="myImg"> {{form.verify_code}}
 
 			<p id="verify_code_tips">{{form.verify_code.errors[0]}}</p>
 		</div>
@@ -81,34 +83,59 @@
 
 	$("#myImg").click(function () {
 		// 加随机值 再次请求地址一样，服务器不重新生成
-		$(this).attr("src", "{{url_for('visitor.get_access_code')}}?ran=" + Math.random())
+		$(this).attr("src", "{{url_for('visitor.get_unloading_code2')}}?ran=" + Math.random())
 
 	});
-	//姓名验证
-	var inital_v = document.getElementById("visitor_name").placeholder;
-	var visitor_name = document.getElementById("visitor_name");
-	var visitor_name_tips = document.getElementById("visitor_tips");
-
-
-	visitor_name.onfocus = function () {
-		if (this.placeholder == inital_v) {
+	//供应商验证
+	var init_supplier = document.getElementById("supplier").placeholder;
+	var supplier = document.getElementById("supplier");
+	var supplier_tips = document.getElementById("supplier_tips");
+	supplier.onfocus = function () {
+		if (this.placeholder == init_supplier) {
 			this.placeholder = ''
 		}
-		visitor_name_tips.innerHTML = ''
+		supplier_tips.innerHTML = ""
 	}
-	visitor_name.onblur = function () {
+	supplier.onblur = function () {
 		if (this.value == '') {
-			this.placeholder = inital_v;
+			this.placeholder = init_supplier
+		} else {
+			if (/^[\u4e00-\u9fa5A-Za-z0-9]{2,30}$/.test(supplier.value)) {
+
+				supplier_tips.innerHTML = ''
+
+			} else {
+				supplier_tips.innerHTML = '请输入正确的供应商名称！'
+
+
+
+			}
+		}
+	}
+	//送货人姓名验证
+	var init_delivery_contact = document.getElementById("delivery_contact").placeholder;
+	var delivery_contact = document.getElementById("delivery_contact");
+	var delivery_contact_tips = document.getElementById("delivery_contact_tips");
+
+
+	delivery_contact.onfocus = function () {
+		if (this.placeholder == init_delivery_contact) {
+			this.placeholder = ''
+		}
+		delivery_contact_tips.innerHTML = ''
+	}
+	delivery_contact.onblur = function () {
+		if (this.value == '') {
+			this.placeholder = init_delivery_contact;
 
 		} else {
 
-			// console.log(visitor_name.value);
 
-			if (/^(([a-zA-Z+\.?\·?a-zA-Z+]{2,16}$)|([\u4e00-\u9fa5+\·?\u4e00-\u9fa5+]{2,16}$))/.test(visitor_name.value)) {
-				visitor_name_tips.innerHTML = ''
+			if (/^(([a-zA-Z+\.?\·?a-zA-Z+]{2,16}$)|([\u4e00-\u9fa5+\·?\u4e00-\u9fa5+]{2,16}$))/.test(delivery_contact.value)) {
+				delivery_contact_tips.innerHTML = ''
 
 			} else {
-				visitor_name_tips.innerHTML = '请输入正确的名字！'
+				delivery_contact_tips.innerHTML = '请输入正确的名字！'
 
 
 			}
@@ -168,56 +195,8 @@
 			}
 		}
 	}
-	//供应商验证
-	var init_supplier = document.getElementById("supplier").placeholder;
-	var supplier = document.getElementById("supplier");
-	var supplier_tips = document.getElementById("supplier_tips");
-	supplier.onfocus = function () {
-		if (this.placeholder == init_supplier) {
-			this.placeholder = ''
-		}
-		supplier_tips.innerHTML = ""
-	}
-	supplier.onblur = function () {
-		if (this.value == '') {
-			this.placeholder = init_supplier
-		} else {
-			if (/^[\u4e00-\u9fa5A-Za-z0-9]{2,30}$/.test(supplier.value)) {
-
-				supplier_tips.innerHTML = ''
-
-			} else {
-				supplier_tips.innerHTML = '请输入正确的供应商名称！'
 
 
-			}
-		}
-	}
-	//物流公司验证
-	var init_logistics_company = document.getElementById("logistics_company").placeholder;
-	var logistics_company = document.getElementById("logistics_company");
-	var logistics_company_tips = document.getElementById("logistics_company_tips");
-	logistics_company.onfocus = function () {
-		if (this.placeholder == init_logistics_company) {
-			this.placeholder = ''
-		}
-		logistics_company_tips.innerHTML = ""
-	}
-	logistics_company.onblur = function () {
-		if (this.value == '') {
-			this.placeholder = init_logistics_company
-		} else {
-			if (/^[\u4e00-\u9fa5A-Za-z0-9]{2,30}$/.test(logistics_company.value)) {
-
-				logistics_company_tips.innerHTML = ''
-
-			} else {
-				logistics_company_tips.innerHTML = '请输入正确的物流公司名称！'
-
-
-			}
-		}
-	};
 	// 验证码输入框
 	var init_verify_code = document.getElementById("verify_code").placeholder;
 	var verify_code = document.getElementById("verify_code");

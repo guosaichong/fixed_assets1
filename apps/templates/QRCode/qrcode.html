@@ -1,0 +1,100 @@
+{%extends "bootstrap/base.html"%}
+{%block title%}生成二维码{%endblock%}
+{%block styles%}
+{{super()}}
+<style>
+  body {
+    padding-top: 60px;
+  }
+.wrap{
+  min-height: 650px;
+}
+
+
+</style>
+{%endblock styles%}
+{%block body%}
+<nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+        aria-expanded="false" aria-controls="navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#"><img style="height: 40px;margin-top: -10px;"
+          src="{{url_for('static',filename='img/logo.png')}}" alt="禹帆物流"></a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li><a href="/">首页</a></li>
+        <li><a href="{{url_for('office.detail')}}">IT设备管理</a></li>
+        <li><a href="{{url_for('visitor.visitor_info')}}">访客查询</a></li>
+        <li><a href="{{url_for('visitor.unloading')}}">卸货查询</a></li>
+        {%if current_user.username=="18102176668"%}
+        <li><a href="{{url_for('public.edit_news')}}">发表文章</a></li>
+        <li><a href="{{url_for('upload.upload')}}">上传文件</a></li>
+        {%endif%}
+        <li><a href="{{url_for('upload.software')}}">下载文件</a></li>
+        <li class="active"><a href="{{url_for('qrcode.generate_qrcode')}}">生成二维码</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        {% if current_user.username %}
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">欢迎 {{current_user.username}}<b
+              class="caret"></b></a>
+          <ul class="dropdown-menu">
+            <li><a href="{{url_for('user.info')}}">用户中心</a></li>
+            <li><a href="{{url_for('user.mod_password')}}">修改密码</a></li>
+          </ul>
+        </li>
+
+
+        <input type="hidden" name="username" value="{{current_user.username}}">
+        <li><a href="{{url_for('user.logout')}}">注销</a></li>
+        {% else%}
+        <li><a href="{{url_for('user.login')}}">登录</a></li>
+        <li><a href="{{url_for('user.register')}}">注册</a></li>
+        {% endif %}
+      </ul>
+    </div>
+    <!--/.nav-collapse -->
+  </div>
+</nav>
+
+
+<div class="container">
+<div class="row">
+  <div class="col-md-8">
+    <div class="wrap">
+      <h3>请上传一个.xlsx文件</h3>
+      <form action="" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            {{form.hidden_tag()}}
+        </div>
+        <div class="form-group">
+            {{form.file}}
+        </div>
+        <div class="form-group">
+            {{form.submit}}
+        </div>
+    </form>
+    </div>
+  </div>
+  <div class="col-md-4"></div>
+
+</div>
+
+
+  <hr>
+
+  <footer>
+    <p>&copy; 2021 YufanLogistics</p>
+  </footer>
+</div> <!-- /container -->
+{%block scripts%}
+{{super()}}
+{%endblock scripts%}
+{%endblock body%}

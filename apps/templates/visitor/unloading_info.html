@@ -88,6 +88,7 @@
                     <th>车牌号</th>
                     <th>车辆类型</th>
                     <th>卸货时间</th>
+                    <th>卸货仓库</th>
                 </thead>
                 <tbody>
                     {%for item in pagination.items%}
@@ -99,6 +100,7 @@
                         <td>{{item.3}}</td>
                         <td>{{item.4}}</td>
                         <td>{{item.5}}</td>
+                        <td>{{item.6}}</td>
                     </tr>
                     {%endfor%}
                 </tbody>

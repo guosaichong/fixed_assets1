@@ -18,7 +18,7 @@
 
 <div class="container">
 	<h2>卸货窗口预约</h2>
-	<form action="{{url_for('visitor.car')}}" method="POST">
+	<form action="{{url_for('visitor.car')}}" method="POST" onsubmit="return checkSubmit();">
 		<div class="form-group">
 			{{form.hidden_tag()}}
 		</div>
@@ -68,7 +68,18 @@
 {%block scripts%}
 {{super()}}
 <script>
-
+	// 设置表单提交标志
+	var submit = false;
+	function checkSubmit() {
+		if (!submit) {
+			// 表单提交后设置标志位
+			submit = true;
+			return true;
+		}
+		// 表单已经提交，不允许再次提交
+		alert("请不要重复提交表单！");
+		return false;
+	}
 
 	$("#myImg").click(function () {
 		// 加随机值 再次请求地址一样，服务器不重新生成

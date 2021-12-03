@@ -5,7 +5,7 @@ from wtforms.fields.simple import FileField, SubmitField
 from wtforms.validators import DataRequired, Length, Regexp, ValidationError
 from flask import session
 from ..exts import db
-from ..visitor.models import CarType, UnloadingTime
+from ..visitor.models import CarType, UnloadingTime, UnloadingTime2
 from sqlalchemy import and_
 
 
@@ -35,7 +35,7 @@ class AccessForm(FlaskForm):
 
 class CarForm(FlaskForm):
     """
-    卸货登记的表单
+    一号库卸货登记的表单
     """
 
     def __init__(self):
@@ -70,6 +70,41 @@ class CarForm(FlaskForm):
         if session.get("unloading_code").lower() != self.verify_code.data.lower():
             raise ValidationError("验证码错误")
 
+class AppointForm(FlaskForm):
+    """
+    二号库卸货登记的表单
+    """
+
+    def __init__(self):
+        FlaskForm.__init__(self)
+        unloading_time_list = UnloadingTime2.query.filter(and_(UnloadingTime2.time > datetime.datetime.now(
+        ), UnloadingTime2.time < datetime.datetime.now()+datetime.timedelta(days=7), UnloadingTime2.selected == 0)).all()
+        cartype_list = CarType.query.all()
+        self.car_type.choices = [(i.id, i.name)for i in cartype_list]
+        self.scheduled_unloading_time.choices = [
+            (i.time, i.time)for i in unloading_time_list]
+    supplier = StringField("供应商名称:", validators=[DataRequired(), Length(2, 30, message="长度为2-30位"), Regexp(r"^[\u4e00-\u9fa5A-Za-z0-9]{2,30}$", message="格式不正确")],
+                           render_kw={"placeholder": "请输入您的供应商名称", "class": "form-control"})
+
+    delivery_contact = StringField("送货联系人:", validators=[DataRequired(), Length(2, 16, message="长度为2-16位"), Regexp(r"^(([a-zA-Z+\.?\·?a-zA-Z+]{2,16}$)|([\u4e00-\u9fa5+\·?\u4e00-\u9fa5+]{2,16}$))", message="格式不正确")],
+                                   render_kw={"placeholder": "请输入送货司机的姓名", "class": "form-control"})
+    phone = StringField("送货手机号:", validators=[DataRequired(), Length(11, 11, message="长度为11位"), Regexp(r"^1[3456789]\d{9}$", message="格式不正确")],
+                        render_kw={"placeholder": "请输入送货司机的手机号", "class": "form-control"})
+    license_number = StringField("送货车牌号:", validators=[DataRequired(), Length(7, 10, message="长度为7-10位"), Regexp(r"^[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领A-Z]{1}[A-Z]{1}[A-Z0-9]{4}[A-Z0-9挂学警港澳]{1}$", message="格式不正确")],
+                                 render_kw={"placeholder": "请输入送货司机的车牌号", "class": "form-control"})
+    car_type = SelectField("送货车辆类型:", validators=[DataRequired()], render_kw={
+                           "class": "form-control"}, coerce=int)
+    scheduled_unloading_time = SelectField("预约卸货时间", validators=[DataRequired()], render_kw={
+                                           "class": "form-control"})
+
+    verify_code = StringField(label="验证码:", validators=[DataRequired()],
+                              render_kw={"placeholder": "请输入验证码", "class": "form-control"})
+    submit = SubmitField("提交", render_kw={"class": "form-control"})
+
+    def validate_verify_code(self, field):
+        # print(field.data)
+        if session.get("unloading_code2").lower() != self.verify_code.data.lower():
+            raise ValidationError("验证码错误")
 
 class UploadForm(FlaskForm):
     """
@@ -77,3 +112,10 @@ class UploadForm(FlaskForm):
     """
     file = FileField(validators=[DataRequired()])
     submit = SubmitField(render_kw={"value": "上传", "class": "form-control"})
+
+class ExcelForm(FlaskForm):
+    """
+    上传xlsx文件的表单
+    """
+    file=FileField(validators=[DataRequired()])
+    submit=SubmitField(render_kw={"value": "确定"})
