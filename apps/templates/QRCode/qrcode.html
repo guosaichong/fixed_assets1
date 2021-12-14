@@ -6,11 +6,34 @@
   body {
     padding-top: 60px;
   }
-.wrap{
-  min-height: 650px;
-}
 
+  .wrap {
+    min-height: 650px;
+  }
 
+  #file_tips {
+    color: red;
+  }
+
+  /*
+ * Footer
+ */
+
+  .blog-footer {
+    padding: 40px 0;
+    color: #999;
+    text-align: center;
+    background-color: #f9f9f9;
+    border-top: 1px solid #e5e5e5;
+    right: 0;
+    left: 0;
+    z-index: 1030;
+    bottom: 0;
+  }
+
+  .blog-footer p:last-child {
+    margin-bottom: 0;
+  }
 </style>
 {%endblock styles%}
 {%block body%}
@@ -66,35 +89,48 @@
 
 
 <div class="container">
-<div class="row">
-  <div class="col-md-8">
-    <div class="wrap">
-      <h3>请上传一个.xlsx文件</h3>
-      <form action="" method="post" enctype="multipart/form-data">
-        <div class="form-group">
-            {{form.hidden_tag()}}
-        </div>
-        <div class="form-group">
-            {{form.file}}
-        </div>
-        <div class="form-group">
-            {{form.submit}}
-        </div>
-    </form>
+  <div class="row">
+    <div class="col-md-12 col-sm-12 col-sm-xs">
+      <p>使用说明</p>
+      <img src="{{url_for('static',filename='img/2cf2902e22d345f8afe39582367808e4.png')}}" alt="" class="img-responsive">
     </div>
   </div>
-  <div class="col-md-4"></div>
+  <div class="row">
+    <div class="col-md-8">
+      <div class="wrap">
+        <h3>请上传一个.xlsx文件</h3>
+        <form action="" method="post" enctype="multipart/form-data">
+          <div class="form-group">
+            {{form.hidden_tag()}}
+          </div>
+          <div class="form-group">
+            {{form.file}}
+            <p id="file_tips">{{form.file.errors[0]}}{{msg}}</p>
+          </div>
+          <div class="form-group">
+            {{form.submit}}
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="col-md-4"></div>
 
-</div>
+  </div>
 
 
-  <hr>
-
-  <footer>
-    <p>&copy; 2021 YufanLogistics</p>
-  </footer>
 </div> <!-- /container -->
+<footer class="blog-footer">
+  <p>&copy; 2021 YufanLogistics</p>
+</footer>
 {%block scripts%}
 {{super()}}
+<script>
+  $(document).ready(function () {
+    $("#file").focus(function () {
+      $("#file_tips").text("");
+    })
+  })
+</script>
+
 {%endblock scripts%}
 {%endblock body%}

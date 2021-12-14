@@ -68,6 +68,26 @@
         color: steelblue;
         text-decoration: underline;
     }
+
+    /*
+ * Footer
+ */
+
+    .blog-footer {
+        padding: 40px 0;
+        color: #999;
+        text-align: center;
+        background-color: #f9f9f9;
+        border-top: 1px solid #e5e5e5;
+        right: 0;
+        left: 0;
+        z-index: 1030;
+        bottom: 0;
+    }
+
+    .blog-footer p:last-child {
+        margin-bottom: 0;
+    }
 </style>
 {%endblock styles%}
 {%block body%}
@@ -95,7 +115,7 @@
                 <li><a href="{{url_for('upload.upload')}}">上传文件</a></li>
                 {%endif%}
                 <li class="active"><a href="{{url_for('upload.software')}}">下载文件</a></li>
-
+                <li><a href="{{url_for('qrcode.generate_qrcode')}}">生成二维码</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 {% if current_user.username %}
@@ -120,7 +140,7 @@
         <!--/.nav-collapse -->
     </div>
 </nav>
-<div class="container">
+<div class="container" style="min-height: 700px;">
     <div class="software">
         <div class="cate-link">
             <h3 class="cate-title"><a href="">办公软件</a></h3>
@@ -165,6 +185,10 @@
         </div>
     </div>
 </div>
+<!--/.container -->
+<footer class="blog-footer">
+    <p>&copy; 2021 YufanLogistics</p>
+</footer>
 {%block scripts%}
 {{super()}}
 {%endblock scripts%}

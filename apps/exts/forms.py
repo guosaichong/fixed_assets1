@@ -1,5 +1,6 @@
 import datetime
 from flask_wtf import FlaskForm
+from flask_wtf.file import FileAllowed
 from wtforms.fields.core import DateField, SelectField, StringField
 from wtforms.fields.simple import FileField, SubmitField
 from wtforms.validators import DataRequired, Length, Regexp, ValidationError
@@ -117,5 +118,6 @@ class ExcelForm(FlaskForm):
     """
     上传xlsx文件的表单
     """
-    file=FileField(validators=[DataRequired()])
+    file=FileField(validators=[DataRequired(),FileAllowed(["xlsx"],message="请上传.xlsx文件")],render_kw={"accept":".xlsx"})
     submit=SubmitField(render_kw={"value": "确定"})
+        

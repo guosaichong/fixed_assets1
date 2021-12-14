@@ -5,7 +5,7 @@ from flask import Blueprint, request, render_template, jsonify
 from flask.globals import session
 from flask.helpers import make_response, send_file
 from ..exts.forms import AccessForm, AppointForm, CarForm
-from ..exts import db
+from ..exts import db,csrf
 from .models import CarType, UnloadingTime2, Visitor, UnloadingTime, Unloading, Warehouse
 from sqlalchemy import func
 import logging

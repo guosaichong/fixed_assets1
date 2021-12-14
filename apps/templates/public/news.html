@@ -3,10 +3,52 @@
 {%block styles%}
 {{super()}}
 <style>
-    body{
-        padding-top: 70px;
-    }
-    
+  body {
+    padding-top: 70px;
+  }
+
+  /*
+ * Main column and sidebar layout
+ */
+
+  .blog-main {
+    font-size: 18px;
+    line-height: 1.5;
+  }
+
+  /* Sidebar modules for boxing content */
+  .sidebar-module {
+    padding: 15px;
+    margin: 0 -15px 15px;
+  }
+
+  .sidebar-module-inset {
+    padding: 15px;
+    background-color: #f5f5f5;
+    border-radius: 4px;
+  }
+
+  .sidebar-module-inset p:last-child,
+  .sidebar-module-inset ul:last-child,
+  .sidebar-module-inset ol:last-child {
+    margin-bottom: 0;
+  }
+
+  /*
+ * Footer
+ */
+
+  .blog-footer {
+    padding: 40px 0;
+    color: #999;
+    text-align: center;
+    background-color: #f9f9f9;
+    border-top: 1px solid #e5e5e5;
+  }
+
+  .blog-footer p:last-child {
+    margin-bottom: 0;
+  }
 </style>
 {%endblock styles%}
 {%block body%}
@@ -29,7 +71,12 @@
         <li><a href="{{url_for('office.detail')}}">IT设备管理</a></li>
         <li><a href="{{url_for('visitor.visitor_info')}}">访客查询</a></li>
         <li><a href="{{url_for('visitor.unloading')}}">卸货查询</a></li>
-
+        {%if current_user.username=="18102176668"%}
+        <li><a href="{{url_for('public.edit_news')}}">发表文章</a></li>
+        <li><a href="{{url_for('upload.upload')}}">上传文件</a></li>
+        {%endif%}
+        <li><a href="{{url_for('upload.software')}}">下载文件</a></li>
+        <li><a href="{{url_for('qrcode.generate_qrcode')}}">生成二维码</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         {% if current_user.username %}
@@ -54,15 +101,40 @@
     <!--/.nav-collapse -->
   </div>
 </nav>
-<div class="container">
-    <div>
-        <div style="margin-bottom: 50px;">
-          {{byte2str(news.content)|safe}}
-        </div>
+<div class="container" style="min-height: 700px;">
+  <div class="row">
+    <div class="col-sm-8 col-md-8 blog-main">
+      <div style="margin-bottom: 50px;">
+        {{byte2str(news.content)|safe}}
+      </div>
     </div>
-    
-    
-</div>
+    <div class="col-sm-3 col-md-3 col-sm-offset-1 col-md-offset-1 blog-sidebar">
+      <div class="sidebar-module sidebar-module-inset">
+        <h4>关于</h4>
+        <p>Etiam porta <em>sem malesuada magna</em> mollis euismod. Cras mattis consectetur purus sit amet fermentum.
+          Aenean lacinia bibendum nulla sed consectetur.</p>
+      </div>
+      <div class="sidebar-module">
+        <h4>存档</h4>
+        <ol class="list-unstyled">
+          {% for i in news_list %}
+          <li><a href="{{url_for('public.news',id=i.id)}}">{{i.title}}</a></li>
+          {% endfor %}
+        </ol>
+      </div>
+    </div>
+
+  </div><!-- /.row -->
+
+
+</div><!-- /.container -->
+
+<footer class="blog-footer">
+  <!-- <p>Blog template built for <a href="">Bootstrap</a> by <a href="">@mdo</a>.</p> -->
+  <p>
+    <a href="#">Back to top</a>
+  </p>
+</footer>
 {%block scripts%}
 {{super()}}
 {%endblock scripts%}

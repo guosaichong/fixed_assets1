@@ -1,0 +1,237 @@
+{% extends "bootstrap/base.html" %}
+{% block title %}供应商{{find_content}}{% endblock %}
+{% block metas %}
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="description" content="">
+{{super()}}
+{% endblock metas %}
+{% block styles %}
+{{super()}}
+<link rel="stylesheet" href="{{url_for('static',filename='css/supplier.css')}}">
+{% endblock styles %}
+{%block body%}
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#"><img style="height: 40px;margin-top: -10px;"
+                    src="{{url_for('static',filename='img/logo.png')}}" alt="禹帆物流"></a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="/">首页</a></li>
+                <li><a href="{{url_for('office.detail')}}">IT设备管理</a></li>
+                <li class="active"><a href="{{url_for('supplier.manage')}}">仓储管理</a></li>
+                <li><a href="{{url_for('visitor.visitor_info')}}">访客查询</a></li>
+                <li><a href="{{url_for('visitor.unloading')}}">卸货查询</a></li>
+                {%if current_user.username=="18102176668"%}
+                <li><a href="{{url_for('public.edit_news')}}">发表文章</a></li>
+                <li><a href="{{url_for('upload.upload')}}">上传文件</a></li>
+                {%endif%}
+                <li><a href="{{url_for('upload.software')}}">下载文件</a></li>
+                <li><a href="{{url_for('qrcode.generate_qrcode')}}">生成二维码</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                {% if current_user.username %}
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">欢迎 {{current_user.username}}<b
+                            class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="{{url_for('user.info')}}">用户中心</a></li>
+                        <li><a href="{{url_for('user.mod_password')}}">修改密码</a></li>
+                        <li><a href="{{url_for('user.logout')}}">注销</a></li>
+                    </ul>
+                </li>
+
+
+                <input type="hidden" name="username" value="{{current_user.username}}">
+
+                {% else%}
+                <li><a href="{{url_for('user.login')}}">登录</a></li>
+                <li><a href="{{url_for('user.register')}}">注册</a></li>
+                {% endif %}
+            </ul>
+        </div>
+        <!--/.nav-collapse -->
+    </div>
+</nav>
+
+
+<div class="container">
+
+    <div class="row">
+
+        <div class="col-sm-3 col-md-2 sidebar">
+            <ul class="nav">
+                <li class="active"><a href="{{url_for('supplier.manage')}}">供应商管理<span
+                            class="sr-only">(current)</span></a></li>
+                <li><a href="{{url_for('machinepart.manage')}}">零件管理</a></li>
+
+            </ul>
+        </div>
+        <div class="col-sm-9 col-md-10">
+
+
+            {% if pagination.total==0 %}
+            <div style="min-height: 600px;">
+
+                <p>没有搜索到数据，你可以到<a href="{{url_for('supplier.manage')}}">供应商</a>页面查看</p>
+
+            </div>
+            {%else%}
+            <div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="main-search">
+                            <div class="pull-left" style="line-height: 40px;">
+                                <p style="margin-left: 5px;"><a
+                                        href="{{url_for('supplier.manage')}}">供应商管理</a>>{{find_content}}</p>
+                            </div>
+                            <div class="pull-right" style="margin-top: 2px;">
+                                <form action="javascript:;">
+
+                                    <input type="hidden" name="csrf-token" value="{{csrf_token()}}">
+
+                                    <div class="form-group pull-left">
+                                        <input type="text" class="form-control" placeholder="输入名称或编号" name="search"
+                                            required value="{{find_content}}">
+                                    </div>
+                                    <button type="submit" class="btn btn-default pull-right" id="search-btn"><span
+                                            class="glyphicon glyphicon-search"></span></button>
+                                </form>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="table-responsive" style="min-height: 600px;">
+                            <table class="table">
+
+                                <thead>
+                                    <tr>
+                                        <th>序号</th>
+                                        <th>名称</th>
+                                        <th>编号</th>
+
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {%for item in pagination.items%}
+                                    <tr>
+                                        <td>{{loop.index}}</td>
+                                        <td>{{item.name}}</td>
+                                        <td>{{item.number}}</td>
+
+                                        <td><a title="详情" href="{{url_for('supplier.detail',number=item.number)}}">详情
+                                            </a>&nbsp;<a title="修改"
+                                                href="{{url_for('supplier.mod',number=item.number)}}">修改
+                                            </a>&nbsp;<a title="删除"
+                                                href="{{url_for('supplier.delete',number=item.number)}}"
+                                                onclick="javascript:return del();">删除
+                                            </a>&nbsp;<a title="增减零件"
+                                                href="{{url_for('supplier.add_machinepart',number=item.number)}}">增减零件
+                                            </a></td>
+                                    </tr>
+                            
+                                    {%endfor%}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="page_selector" style="text-align: center;">
+
+                            <ul class="pagination">
+                                {% if pagination.has_prev %}
+                                <li><a
+                                        href="{{url_for('supplier.search')}}?find_content={{find_content}}&page={{pagination.prev_num}}">&laquo;</a>
+                                </li>
+                                {%else%}
+                                <li class="disabled"><span>&laquo;</span></li>
+                                {%endif%}
+                                {% for i in pagination.iter_pages() %}
+                                {%if i%}
+                                {%if pagination.page==i%}
+                                <li class="active">
+                                    <span>{{i}} <span class="sr-only">(current)</span></span>
+                                </li>
+                                {%else%}
+                                <li><a href="{{url_for('supplier.search')}}?find_content={{find_content}}&page={{i}}">{{i}}
+                                        <span class="sr-only">(current)</span></a>
+                                </li>
+                                {%endif%}
+                                {%else%}
+                                <li><span>...</span></li>
+                                {%endif%}
+                                {%endfor%}
+                                {% if pagination.has_next %}
+                                <li><a
+                                        href="{{url_for('supplier.search')}}?find_content={{find_content}}&page={{pagination.next_num}}">&raquo;</a>
+                                </li>
+                                {%else%}
+                                <li class="disabled"><span>&raquo;</span></li>
+                                {%endif%}
+                            </ul>
+                        </div>
+
+
+                    </div>
+                </div>
+
+            </div>
+
+            {%endif%}
+
+
+        </div>
+    </div>
+
+
+
+
+
+</div>
+
+{%block scripts%}
+{{super()}}
+<script>
+    $(document).ready(function(){
+        var csrfToken=$("input[name='csrf-token']").val();
+        var searchContent;
+        $("#search-btn").click(function(){
+            searchContent=$("[name='search']").val();
+            $.ajax({
+                url:"{{url_for('supplier.search')}}",
+                type:"POST",
+                dataType:"json",
+                data:{"search":searchContent},
+                headers:{"X-CSRFToken":csrfToken},
+                success:function(data){
+                    if(data.code==200){
+                        location.href="{{url_for('supplier.search')}}?find_content="+searchContent
+                    }
+                }
+            })
+        })
+    })
+    function del() {
+        var msg = "您真的要删除吗？\n\n请确认！";
+        if (confirm(msg) == true) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+</script>
+
+{%endblock scripts%}
+{%endblock body%}

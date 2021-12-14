@@ -1,10 +1,15 @@
 {%extends "bootstrap/base.html"%}
 {%block title%}首页{%endblock%}
+{%block metas%}
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+{{super()}}
+{%endblock metas%}
 {%block styles%}
 {{super()}}
 <style>
   body {
-    padding-top: 60px;
+    padding-top: 50px;
   }
 
   .list-group div {
@@ -31,6 +36,26 @@
     text-decoration: underline;
     color: #337ab7;
     background-color: white;
+  }
+
+  /*
+ * Footer
+ */
+
+ .blog-footer {
+    padding: 40px 0;
+    color: #999;
+    text-align: center;
+    background-color: #f9f9f9;
+    border-top: 1px solid #e5e5e5;
+    right: 0;
+    left: 0;
+    z-index: 1030;
+    bottom: 0;
+  }
+
+  .blog-footer p:last-child {
+    margin-bottom: 0;
   }
 </style>
 {%endblock styles%}
@@ -59,6 +84,7 @@
         <li><a href="{{url_for('upload.upload')}}">上传文件</a></li>
         {%endif%}
         <li><a href="{{url_for('upload.software')}}">下载文件</a></li>
+        <li><a href="{{url_for('qrcode.generate_qrcode')}}">生成二维码</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         {% if current_user.username %}
@@ -122,7 +148,8 @@
               n.title|length>18%}...{%endif%}</span><span>{{datetime2date(n.create_time)}}</span></a></div>
         {%endfor%}
       </div>
-      <p><a class="btn btn-default" href="{{url_for('public.news_list',type=industry_type_id)}}" role="button">更多... &raquo;</a></p>
+      <p><a class="btn btn-default" href="{{url_for('public.news_list',type=industry_type_id)}}" role="button">更多...
+          &raquo;</a></p>
     </div>
     <div class="col-md-4">
       <h2>公司新闻</h2>
@@ -133,7 +160,8 @@
               n.title|length>18%}...{%endif%}</span><span>{{datetime2date(n.create_time)}}</span></a></div>
         {%endfor%}
       </div>
-      <p><a class="btn btn-default" href="{{url_for('public.news_list',type=company_type_id)}}" role="button">更多... &raquo;</a></p>
+      <p><a class="btn btn-default" href="{{url_for('public.news_list',type=company_type_id)}}" role="button">更多...
+          &raquo;</a></p>
     </div>
     <div class="col-md-4">
       <h2>放假通知</h2>
@@ -144,16 +172,17 @@
               n.title|length>18%}...{%endif%}</span><span>{{datetime2date(n.create_time)}}</span></a></div>
         {%endfor%}
       </div>
-      <p><a class="btn btn-default" href="{{url_for('public.news_list',type=notice_type_id)}}" role="button">更多... &raquo;</a></p>
+      <p><a class="btn btn-default" href="{{url_for('public.news_list',type=notice_type_id)}}" role="button">更多...
+          &raquo;</a></p>
     </div>
   </div>
 
-  <hr>
 
-  <footer>
-    <p>&copy; 2021 YufanLogistics</p>
-  </footer>
+  
 </div> <!-- /container -->
+<footer class="blog-footer">
+  <p>&copy; 2021 YufanLogistics</p>
+</footer>
 {%block scripts%}
 {{super()}}
 {%endblock scripts%}

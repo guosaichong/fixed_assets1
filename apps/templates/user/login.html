@@ -82,25 +82,30 @@
                     <div class="form d-flex align-items-center">
                         <div class="content">
                             <form method="post" action="javascript:;" class="form-validate" id="loginFrom">
-                                <div class="form-group">
-                                    <input id="login-username" type="text" required data-msg="请输入用户名"
-                                        placeholder="请输入用户名/手机号" class="input-material">
-                                    <div id="uname_tips"></div>
-                                </div>
-                                <div class="form-group">
-                                    <input id="login-password" type="password" required data-msg="请输入密码"
-                                        placeholder="请输入密码" class="input-material">
-                                    <div id="pwd_tips"></div>
-                                </div>
-                                <button id="login" type="submit" class="btn btn-primary">登录</button>
-                                <div style="margin-top: -40px;">
 
+                                <div class="form-group">
+                                    <input type="hidden" class="input-material" name="csrf-token"
+                                        value="{{csrf_token()}}">
 
-                                    <div class="custom-control custom-checkbox " style="float: right;">
-                                        <input type="checkbox" class="custom-control-input" id="check1">
-                                        <label class="custom-control-label" for="check1">记住密码&nbsp;&nbsp;</label>
+                                    <div class="form-group">
+                                        <input id="login-username" type="text" required data-msg="请输入用户名"
+                                            placeholder="请输入用户名/手机号" class="input-material">
+                                        <div id="uname_tips"></div>
                                     </div>
-                                </div>
+                                    <div class="form-group">
+                                        <input id="login-password" type="password" required data-msg="请输入密码"
+                                            placeholder="请输入密码" class="input-material">
+                                        <div id="pwd_tips"></div>
+                                    </div>
+                                    <button id="login" type="submit" class="btn btn-primary">登录</button>
+                                    <div style="margin-top: -40px;">
+
+
+                                        <div class="custom-control custom-checkbox " style="float: right;">
+                                            <input type="checkbox" class="custom-control-input" id="check1">
+                                            <label class="custom-control-label" for="check1">记住密码&nbsp;&nbsp;</label>
+                                        </div>
+                                    </div>
                             </form>
                             <br />
                             <small>没有账号?</small><a href="{{url_for('user.register')}}" class="signup">&nbsp;注册</a>
@@ -130,6 +135,7 @@
 {%- endblock scripts %}
 <script>
     $(function () {
+        var csrfToken = $("input[name='csrf-token']").val();
         var flagName = false;
         var flagPas = false;
         var username, password;
@@ -179,14 +185,21 @@
                     flagName = false;
                 } else {
                     // 向后端服务器发送用户名，后端服务器查询数据库
-                    $.post("{{url_for('user.verifi_username')}}", { username: username }, function (data) {
-                        // 用户不存在
-                        if (data.code == 4000) {
-                            $("#uname_tips").text(data.msg)
-                            flagName = false;
-                            // 用户存在
-                        } else {
-                            flagName = true;
+                    $.ajax({
+                        url: "{{url_for('user.verifi_username')}}",
+                        type: "POST",
+                        data: { "username": username },
+                        dataType: "json",
+                        headers: { "X-CSRFToken": csrfToken },
+                        success: function (data) {
+                            // 用户不存在
+                            if (data.code == 4000) {
+                                $("#uname_tips").text(data.msg)
+                                flagName = false;
+                                // 用户存在
+                            } else {
+                                flagName = true;
+                            }
                         }
                     })
                 }
@@ -231,13 +244,20 @@
                 // 用md5加密
                 var password_md5 = $.md5(password);
                 // 网络请求，传送用户名和密码密文到后端服务器
-                $.post("{{url_for('user.login')}}", { username: username, password: password_md5 }, function (data) {
-                    // 密码正确，登录成功
-                    if (data.code == 200) {
-                        window.location.href = "{{url_for('office.detail')}}"
-                        // 密码错误，错误消息显示在页面上
-                    } else {
-                        $("#pwd_tips").text(data.msg)
+                $.ajax({
+                    type: "POST",
+                    url: "/login",
+                    dataType: "json",
+                    data: { "username": username, "password": password_md5 },
+                    headers: { "X-CSRFToken": csrfToken },
+                    success: function (data) {
+                        // 密码正确，登录成功
+                        if (data.code == 200) {
+                            window.location.href = "{{url_for('office.detail')}}"
+                            // 密码错误，错误消息显示在页面上
+                        } else {
+                            $("#pwd_tips").text(data.msg)
+                        }
                     }
                 })
             } else {

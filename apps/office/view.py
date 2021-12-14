@@ -5,7 +5,7 @@ from flask import Blueprint, redirect, url_for
 from flask import request, jsonify
 from flask.templating import render_template
 from .models import Equipment, Category, Department, Location
-from ..exts import db
+from ..exts import db,csrf
 import logging
 logger = logging.getLogger("root.office")
 
@@ -13,6 +13,7 @@ office_bp = Blueprint("office", __name__)
 
 
 # 增加前先验证资产编号是否唯一
+@csrf.exempt
 @office_bp.route("/asset_number_verifi/<asset_number>", methods=["POST"])
 def asset_number_verifi(asset_number):
     equ_obj = db.session.query(Equipment).filter(
@@ -30,7 +31,7 @@ def asset_number_verifi(asset_number):
         }
         return jsonify(RET)
 
-
+@csrf.exempt
 @office_bp.route("/add", methods=["GET", "POST"])
 @login_required
 @role_required
@@ -77,7 +78,7 @@ def add():
         Category.id == int(category_id)).first()
     return render_template("office/add.html", category_list=category_list, category_id=int(category_id), dep_list=dep_list, loc_list=loc_list, cat_name=cat_name[0])
 
-
+@csrf.exempt
 @office_bp.route("/dep_add", methods=["GET", "POST"])
 @login_required
 @role_required
@@ -124,7 +125,7 @@ def dep_add():
 
 # 按位置添加设备
 
-
+@csrf.exempt
 @office_bp.route("/loc_add", methods=["GET", "POST"])
 @login_required
 @role_required
@@ -255,6 +256,7 @@ def location():
 
 
 # 修改信息
+@csrf.exempt
 @office_bp.route("/mod/<asset_number>", methods=["GET", "POST"])
 @login_required
 @role_required
@@ -313,7 +315,7 @@ def delete(asset_number):
     logger.warning("%s删除了%s", current_user.username, asset_number)
     return redirect("/detail"+"?category="+str(category_id[0]))
 
-
+@csrf.exempt
 @office_bp.route("/search", methods=["GET", "POST"])
 def search():
     """查找功能"""

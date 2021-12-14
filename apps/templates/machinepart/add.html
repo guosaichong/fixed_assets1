@@ -1,0 +1,375 @@
+{% extends "bootstrap/base.html" %}
+{% block title %}增加零件{% endblock %}
+{% block metas %}
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="description" content="">
+{{super()}}
+{% endblock metas %}
+{% block styles %}
+{{super()}}
+<link rel="stylesheet" href="{{url_for('static',filename='css/supplier.css')}}">
+{% endblock styles %}
+{%block body%}
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#"><img style="height: 40px;margin-top: -10px;"
+                    src="{{url_for('static',filename='img/logo.png')}}" alt="禹帆物流"></a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="/">首页</a></li>
+                <li><a href="{{url_for('office.detail')}}">IT设备管理</a></li>
+                <li class="active"><a href="{{url_for('supplier.manage')}}">仓储管理</a></li>
+                <li><a href="{{url_for('visitor.visitor_info')}}">访客查询</a></li>
+                <li><a href="{{url_for('visitor.unloading')}}">卸货查询</a></li>
+                {%if current_user.username=="18102176668"%}
+                <li><a href="{{url_for('public.edit_news')}}">发表文章</a></li>
+                <li><a href="{{url_for('upload.upload')}}">上传文件</a></li>
+                {%endif%}
+                <li><a href="{{url_for('upload.software')}}">下载文件</a></li>
+                <li><a href="{{url_for('qrcode.generate_qrcode')}}">生成二维码</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                {% if current_user.username %}
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">欢迎 {{current_user.username}}<b
+                            class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="{{url_for('user.info')}}">用户中心</a></li>
+                        <li><a href="{{url_for('user.mod_password')}}">修改密码</a></li>
+                        <li><a href="{{url_for('user.logout')}}">注销</a></li>
+                    </ul>
+                </li>
+
+
+                <input type="hidden" name="username" value="{{current_user.username}}">
+
+                {% else%}
+                <li><a href="{{url_for('user.login')}}">登录</a></li>
+                <li><a href="{{url_for('user.register')}}">注册</a></li>
+                {% endif %}
+            </ul>
+        </div>
+        <!--/.nav-collapse -->
+    </div>
+</nav>
+
+
+<div class="container">
+
+    <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+            <ul class="nav">
+                <li><a href="{{url_for('supplier.manage')}}">供应商管理</a></li>
+                <li class="active"><a href="{{url_for('machinepart.manage')}}">零件管理<span
+                            class="sr-only">(current)</span></a></li>
+
+            </ul>
+        </div>
+        <div class="col-sm-9 col-md-10">
+
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="main-search">
+                        <div class="pull-left" style="line-height: 40px;">
+                            <p style="margin-left: 5px;"><a href="{{url_for('machinepart.manage')}}">零件管理</a>>增加零件
+                            </p>
+                        </div>
+                        <div class="pull-right" style="margin-top: 2px;">
+                            <form action="{{url_for('machinepart.search')}}" method="POST">
+                                <div class="form-group pull-left">
+                                    <input type="text" class="form-control" placeholder="输入名称或编号" name="search"
+                                        required>
+                                </div>
+                                <button type="submit" class="btn btn-default pull-right" id="search"><span
+                                        class="glyphicon glyphicon-search"></span></button>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <form class="form-horizontal" role="form" action="javascript:;">
+                        <div class="form-group">
+                            <input type="hidden" name="csrf-token" value="{{csrf_token()}}">
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="part-number"><span
+                                    style="color: red;">*</span>零件编号:</label>
+                            <div class="col-sm-6">
+                                <input type="text" name="part-number" id="part-number" class="form-control"
+                                    placeholder="请输入零件编号" required>
+                            </div>
+                            <div class="tip" id="part-number-tip"></div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="part-name"><span
+                                    style="color: red;">*</span>零件名称:</label>
+                            <div class="col-sm-6">
+                                <input type="text" name="part-name" id="part-name" class="form-control"
+                                    placeholder="请输入零件名称" required>
+                            </div>
+                            <div class="tip" id="part-name-tip"></div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="amount"><span
+                                    style="color: red;">*</span>零件数量:</label>
+                            <div class="col-sm-6">
+                                <input type="number" min="0" max="999999" name="amount" id="amount" class="form-control"
+                                    placeholder="请输入零件数量" required value="0">
+                            </div>
+                            <div class="tip" id="amount-tip"></div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="low-storage"><span
+                                style="color: red;">*</span>低储值:</label>
+                            <div class="col-sm-6">
+                                <input type="number" min="1" max="999998" name="low-storage" id="low-storage" class="form-control"
+                                    placeholder="请输入低储数量" value="1" required>
+                            </div>
+                            <div class="tip" id="low-storage-tip"></div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="high-storage"><span
+                                style="color: red;">*</span>高储值:</label>
+                            <div class="col-sm-6">
+                                <input type="number" max="999999" min="2" name="high-storage" id="high-storage" class="form-control"
+                                    placeholder="请输入高储数量" value="999999" required>
+                            </div>
+                            <div class="tip" id="high-storage-tip"></div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="quantifier"><span
+                                    style="color: red;">*</span>数量单位:</label>
+                            <div class="col-sm-6">
+                                <input type="text" name="quantifier" id="quantifier" class="form-control"
+                                    placeholder="请输入数量单位" required>
+                            </div>
+                            <div class="tip" id="quantifier-tip"></div>
+                        </div>
+                        <div class="form-group">
+
+                            <div class="col-sm-6 col-sm-offset-2">
+                                <button class="btn btn-default" id="enter">确定</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+
+
+
+
+</div>
+
+{%block scripts%}
+{{super()}}
+<script>
+    $(document).ready(function () {
+        var csrfToken = $("input[name='csrf-token']").val();
+        var partNumber, partName, quantifier;
+        var partNumberFlag, partNameFlag, quantifierFlag;
+        var amount=0;
+        var lowStorage=1;
+        var highStorage=999999;
+        var amountFlag = true;
+        var lowStorageFlag = true;
+        var highStorageFlag = true;
+        $("#part-number").focus(function () {
+            $("#part-number-tip").text("")
+        })
+        $("#part-number").blur(function () {
+            partNumber = $.trim($(this).val());
+            if (partNumber == "") {
+                partNumberFlag = false;
+            } else {
+                if (partNumber.length > 20) {
+                    $("#part-number-tip").text("长度不能大于20位");
+                    partNumberFlag = false;
+                } else {
+                    // 有输入值并且小于等于20 验证是否唯一
+                    $.ajax({
+                        url: "/machine/number_verifi/" + partNumber,
+                        type: "POST",
+                        data: {},
+                        dataType: "json",
+                        headers: { "X-CSRFToken": csrfToken },
+                        success: function (data) {
+                            if (data.code == 1) {
+                                $("#part-number-tip").text(data.msg);
+                                partNumberFlag = false;
+                            } else {
+                                partNumberFlag = true;
+                            }
+                        }
+                    })
+                }
+            }
+        })
+        $("#part-name").focus(function () {
+            $("#part-name-tip").text("")
+        })
+        $("#part-name").blur(function () {
+            partName = $.trim($(this).val());
+            if (partName == "") {
+                partNameFlag = false;
+            } else {
+                if (partName.length > 30) {
+                    $("#part-name-tip").text("长度不能大于30位");
+                    partNameFlag = false;
+                } else {
+                    // 有输入值并且小于等于30
+                    partNameFlag = true;
+                }
+            }
+        })
+        $("#amount").focus(function () {
+            $("#amount-tip").text("");
+        })
+        $("#amount").blur(function () {
+            amount = $.trim($(this).val());
+            if (amount == "") {
+                amountFlag = false;
+            } else {
+                amountFlag = true;
+
+            }
+        })
+        $("#low-storage").focus(function () {
+            $("#low-storage-tip").text("");
+            $("#high-storage-tip").text("");
+        })
+        $("#low-storage").blur(function () {
+            lowStorage = $.trim($(this).val());
+            if (lowStorage == "") {
+                lowStorageFlag = false;
+            } else {
+                // 输入了低储值
+                // 高储值为空
+                if (highStorage == "") {
+                    highStorageFlag=false
+                } else {
+                    // 高储值不为空
+                    if (lowStorage >= highStorage) {
+                        $("#low-storage-tip").text("低储值不能大于等于高储值");
+                        lowStorageFlag = false;
+                    } else {
+                        lowStorageFlag = true;
+                        highStorageFlag=true;
+                    }
+                }
+            }
+
+
+
+        })
+        $("#high-storage").focus(function () {
+            $("#high-storage-tip").text("");
+            $("#low-storage-tip").text("");
+        })
+        $("#high-storage").blur(function () {
+            highStorage = $.trim($(this).val());
+            if (highStorage == "") {
+                highStorageFlag = false;
+            } else {
+                // 输入了高储值
+                // 没有输入低储
+                // lowStorage = $.trim($("#low-storage").val());
+                if (lowStorage == "") {
+                    lowStorageFlag=false;
+                } else {
+                    // 输入了低储值
+                    if (highStorage <= lowStorage) {
+                        $("#high-storage-tip").text("高储值应该大于低储值");
+                        highStorageFlag = false;
+
+                    } else {
+                        highStorageFlag = true;
+                        lowStorageFlag=true;
+                    }
+                }
+            }
+
+
+        })
+        $("#quantifier").focus(function () {
+            $("#quantifier-tip").text("");
+        })
+        $("#quantifier").blur(function () {
+            quantifier = $.trim($("#quantifier").val());
+            if (quantifier == "") {
+                quantifierFlag = false;
+            } else {
+                if (quantifier.length > 10) {
+                    $("#quantifier-tip").text("不能大于10个字符");
+                    quantifierFlag = false;
+                } else {
+                    quantifierFlag = true;
+                }
+            }
+        })
+        $("#enter").click(function () {
+
+            if (!partNumberFlag) {
+                $("#part-number").focus();
+                return
+            }
+            if (!partNameFlag) {
+                $("#part-name").focus();
+                return
+            }
+            if (!amountFlag) {
+                $("#amount").focus();
+                return
+            }
+            if (!lowStorageFlag) {
+                $("#low-storage").focus();
+                return
+            }
+            if (!highStorageFlag) {
+                $("#high-storage").focus();
+                return
+            }
+            if (!quantifierFlag) {
+                $("#quantifier").focus();
+                return
+            }
+            $.ajax({
+                url: "{{url_for('machinepart.add')}}",
+                type: "POST",
+                dataType: "json",
+                data: { "part_number": partNumber, "part_name": partName, "amount": amount, "low_storage": lowStorage, "high_storage": highStorage, "quantifier": quantifier },
+                headers: { "X-CSRFToken": csrfToken },
+                success: function (data) {
+                    if (data.code == 0) {
+                        location="/machine/manage"
+                    } else {
+                        alert("请重新添加")
+                    }
+                }
+            })
+
+        })
+    })
+</script>
+
+{%endblock scripts%}
+{%endblock body%}

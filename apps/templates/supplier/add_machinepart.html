@@ -1,0 +1,225 @@
+{%extends "bootstrap/base.html"%}
+{%block title%}供应商管理-供应零件{%endblock title%}
+{% block metas %}
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="description" content="">
+<meta name="csrf-token" content="{{csrf_token()}}">
+{{super()}}
+{% endblock metas %}
+{%block styles%}
+{{super()}}
+<link rel="stylesheet" href="{{url_for('static',filename='css/supplier.css')}}">
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+<style>
+    label {
+        display: inline-block;
+        max-width: 100%;
+        margin-bottom: 5px;
+        font-weight: 700;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+
+    .added-parts {
+        border: 1px solid #f5f5f5;
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .added-parts div {
+        display: flex;
+        justify-content: space-between;
+        width: 178px;
+        border: 1px dotted #ccc;
+        padding: 2px 4px;
+        margin: 5px;
+    }
+
+    .added-parts div span:first-child {
+        width: 150px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+</style>
+{%endblock styles%}
+{% block body -%}
+{% block navbar %}
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#"><img style="height: 40px;margin-top: -10px;"
+                    src="{{url_for('static',filename='img/logo.png')}}" alt="禹帆物流"></a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="/">首页</a></li>
+                <li><a href="{{url_for('office.detail')}}">IT设备管理</a></li>
+                <li class="active"><a href="{{url_for('supplier.manage')}}">仓储管理</a></li>
+                <li><a href="{{url_for('visitor.visitor_info')}}">访客查询</a></li>
+                <li><a href="{{url_for('visitor.unloading')}}">卸货查询</a></li>
+                {%if current_user.username=="18102176668"%}
+                <li><a href="{{url_for('public.edit_news')}}">发表文章</a></li>
+                <li><a href="{{url_for('upload.upload')}}">上传文件</a></li>
+                {%endif%}
+                <li><a href="{{url_for('upload.software')}}">下载文件</a></li>
+                <li><a href="{{url_for('qrcode.generate_qrcode')}}">生成二维码</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                {% if current_user.username %}
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">欢迎 {{current_user.username}}<b
+                            class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="{{url_for('user.info')}}">用户中心</a></li>
+                        <li><a href="{{url_for('user.mod_password')}}">修改密码</a></li>
+                        <li><a href="{{url_for('user.logout')}}">注销</a></li>
+                    </ul>
+                </li>
+
+
+                <input type="hidden" name="username" value="{{current_user.username}}">
+
+                {% else%}
+                <li><a href="{{url_for('user.login')}}">登录</a></li>
+                <li><a href="{{url_for('user.register')}}">注册</a></li>
+                {% endif %}
+            </ul>
+        </div>
+        <!--/.nav-collapse -->
+    </div>
+</nav>
+{%- endblock navbar %}
+{% block content -%}
+<div class="container">
+
+    <div class="row">
+
+        <div class="col-sm-3 col-md-2 sidebar">
+            <ul class="nav">
+                <li class="active"><a href="{{url_for('supplier.manage')}}">供应商管理<span
+                            class="sr-only">(current)</span></a></li>
+                <li><a href="{{url_for('machinepart.manage')}}">零件管理</a></li>
+            </ul>
+        </div>
+        <div class="col-sm-9 col-md-10">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="main-search">
+                        <div class="pull-left" style="line-height: 40px;">
+                            <p style="margin-left: 5px;"><a href="{{url_for('supplier.manage')}}">供应商管理</a>><a
+                                    href="{{url_for('supplier.detail',number=supplier_obj.number)}}">{{supplier_obj.name}}</a>供应零件管理
+                            </p>
+                        </div>
+                        <div class="pull-right" style="margin-top: 2px;">
+                            <form action="javascript:;">
+                                <div class="form-group pull-left">
+                                    <input type="text" class="form-control" placeholder="输入名称或编号" name="search" required
+                                        value="{{find_content}}">
+                                </div>
+                                <button class="btn btn-default pull-right" id="search-btn"><span
+                                        class="glyphicon glyphicon-search"></span></button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    {% if added_parts %}
+                    <div>
+                        <p class="h4">已经添加的零件</p>
+                    </div>
+                    <div class="added-parts">
+                        {% for i in added_parts %}
+                        <div><span>{{i.part_number}}({{i.part_name}})</span><span><a
+                                    href="{{url_for('supplier.reduce_machinepart',number=supplier_obj.number)}}?part_number={{i.part_number}}"
+                                    title="删除"><img src="{{url_for('static',filename='img/删除.png')}}" alt="删除"
+                                        style="width: 14px;height: 14px;"></a></span></div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    {% if not_added_parts %}
+                    <div>
+                        <p class="h4">还未添加的零件</p>
+                    </div>
+                    <form action="javascript:;" method="post">
+                        <div class="not-added-parts row">
+                            <div class="col-md-3 col-sm-3">
+                                <label class="control-label" style="padding-top: 7px;">{{supplier_obj.name}}增加零件</label>
+                            </div>
+                            <div class="col-md-6 col-sm-6">
+                                <select style="margin-bottom: 0px;color:#8E8E8E;" class="form-control m-b selectpicker"
+                                    data-live-search="true" name="parts-numbers" id="parts-numbers">
+                                    {% for i in not_added_parts %}
+                                    <option value="{{i.part_number}}" title="{{i.part_number}}">{{i.part_number}}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-3 col-sm-3">
+                                <button class="form-control btn btn-default" id="enter">确定</button>
+                            </div>
+                        </div>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{%- endblock content %}
+{% block scripts %}
+{{super()}}
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
+<script>
+    $(document).ready(function () {
+        var csrfToken = $("meta[name='csrf-token']").attr("content") ? $("meta[name='csrf-token']").attr("content") : "";
+        var searchContent;
+        $("#search-btn").click(function () {
+            searchContent = $("[name='search']").val();
+            $.ajax({
+                url: "{{url_for('supplier.search')}}",
+                type: "POST",
+                dataType: "json",
+                data: { "search": searchContent },
+                headers: { "X-CSRFToken": csrfToken },
+                success: function (data) {
+                    if (data.code == 200) {
+                        location.href = "{{url_for('supplier.search')}}?find_content=" + searchContent
+                    }
+                }
+            })
+        })
+        $("#enter").click(function () {
+            let selectedValue = $("#parts-numbers").find("option:selected").selectpicker("val").get("0").value;
+            $.ajax({
+                url: "{{url_for('supplier.add_machinepart',number=supplier_obj.number)}}",
+                type: "POST",
+                dataType: "json",
+                data: { "part": selectedValue },
+                headers: { "X-CSRFToken": csrfToken },
+                success: function (data) {
+                    if (data.code == 0) {
+                        location.href = "{{url_for('supplier.add_machinepart',number=supplier_obj.number)}}"
+                    }
+                }
+            })
+        })
+    })
+
+</script>
+{%endblock scripts%}
+{%endblock body%}

@@ -1,0 +1,25 @@
+body {
+    padding-top: 70px !important;
+}
+.sidebar{
+    background-color: #f5f5f5;
+    border-right: 1px solid #eee;
+    min-height: 700px;
+}
+.sidebar .active{
+    color: #555;
+    background-color: #e7e7e7;
+}
+.main-search {
+    background-color: #fff;
+    border-style: solid;
+    border-color: #e7e7e7;
+    border-width: 1px;
+    border-left: none;
+    border-right: none;
+    height: 40px;
+}
+.tip{
+    color: red;
+    padding-top: 7px;
+}

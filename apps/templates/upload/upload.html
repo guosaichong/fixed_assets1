@@ -33,7 +33,7 @@
                 <li class="active"><a href="{{url_for('upload.upload')}}">上传文件</a></li>
                 {%endif%}
                 <li><a href="{{url_for('upload.software')}}">下载文件</a></li>
-
+                <li><a href="{{url_for('qrcode.generate_qrcode')}}">生成二维码</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 {% if current_user.username %}
@@ -43,12 +43,13 @@
                     <ul class="dropdown-menu">
                         <li><a href="{{url_for('user.info')}}">用户中心</a></li>
                         <li><a href="{{url_for('user.mod_password')}}">修改密码</a></li>
+                        <li><a href="{{url_for('user.logout')}}">注销</a></li>
                     </ul>
                 </li>
 
 
                 <input type="hidden" name="username" value="{{current_user.username}}">
-                <li><a href="{{url_for('user.logout')}}">注销</a></li>
+                
                 {% else%}
                 <li><a href="{{url_for('user.login')}}">登录</a></li>
                 <li><a href="{{url_for('user.register')}}">注册</a></li>
@@ -59,18 +60,23 @@
     </div>
 </nav>
 <div class="container">
-    <h2>上传文件</h2>
-    <form action="{{url_for('upload.upload')}}" method="post" enctype="multipart/form-data">
-        <div class="form-group">
-            {{form.hidden_tag()}}
+    <div class="row">
+        <div class="col-md-8 col-sm-8">
+            <h2>上传文件</h2>
+            <form action="{{url_for('upload.upload')}}" method="post" enctype="multipart/form-data">
+                <div class="form-group">
+                    {{form.hidden_tag()}}
+                </div>
+                <div class="form-group">
+                    {{form.file}}
+                </div>
+                <div class="form-group">
+                    {{form.submit}}
+                </div>
+            </form>
         </div>
-        <div class="form-group">
-            {{form.file}}
-        </div>
-        <div class="form-group">
-            {{form.submit}}
-        </div>
-    </form>
+    </div>
+    
 </div>
 {%block scripts%}
 {{super()}}

@@ -1,0 +1,200 @@
+{%extends "bootstrap/base.html"%}
+{%block title%}供应商管理-修改供应商{%endblock title%}
+{% block metas %}
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="description" content="">
+{{super()}}
+{% endblock metas %}
+{%block styles%}
+{{super()}}
+<link rel="stylesheet" href="{{url_for('static',filename='css/supplier.css')}}">
+{%endblock styles%}
+{% block body -%}
+{% block navbar %}
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#"><img style="height: 40px;margin-top: -10px;"
+                    src="{{url_for('static',filename='img/logo.png')}}" alt="禹帆物流"></a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="/">首页</a></li>
+                <li><a href="{{url_for('office.detail')}}">IT设备管理</a></li>
+                <li class="active"><a href="{{url_for('supplier.manage')}}">仓储管理</a></li>
+                <li><a href="{{url_for('visitor.visitor_info')}}">访客查询</a></li>
+                <li><a href="{{url_for('visitor.unloading')}}">卸货查询</a></li>
+                {%if current_user.username=="18102176668"%}
+                <li><a href="{{url_for('public.edit_news')}}">发表文章</a></li>
+                <li><a href="{{url_for('upload.upload')}}">上传文件</a></li>
+                {%endif%}
+                <li><a href="{{url_for('upload.software')}}">下载文件</a></li>
+                <li><a href="{{url_for('qrcode.generate_qrcode')}}">生成二维码</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                {% if current_user.username %}
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">欢迎 {{current_user.username}}<b
+                            class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="{{url_for('user.info')}}">用户中心</a></li>
+                        <li><a href="{{url_for('user.mod_password')}}">修改密码</a></li>
+                        <li><a href="{{url_for('user.logout')}}">注销</a></li>
+                    </ul>
+                </li>
+
+
+                <input type="hidden" name="username" value="{{current_user.username}}">
+                
+                {% else%}
+                <li><a href="{{url_for('user.login')}}">登录</a></li>
+                <li><a href="{{url_for('user.register')}}">注册</a></li>
+                {% endif %}
+            </ul>
+        </div>
+        <!--/.nav-collapse -->
+    </div>
+</nav>
+{%- endblock navbar %}
+{% block content -%}
+<div class="container">
+
+    <div class="row">
+
+        <div class="col-sm-3 col-md-2 sidebar">
+            <ul class="nav">
+                <li class="active"><a href="{{url_for('supplier.manage')}}">供应商管理<span
+                            class="sr-only">(current)</span></a></li>
+                <li><a href="#">零件管理</a></li>
+
+            </ul>
+        </div>
+        <div class="col-sm-9 col-md-10">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="main-search">
+                        <div class="pull-left" style="line-height: 40px;">
+                            <p style="margin-left: 5px;"><a href="{{url_for('supplier.manage')}}">供应商管理</a>>修改供应商</p>
+                        </div>
+                        <div class="pull-right" style="margin-top: 2px;">
+                            <form action="{{url_for('supplier.search')}}" method="POST">
+                                <div class="form-group pull-left">
+                                    <input type="text" class="form-control" placeholder="输入名称或编号" name="search"
+                                        required>
+                                </div>
+                                <button type="submit" class="btn btn-default pull-right" id="search"><span
+                                        class="glyphicon glyphicon-search"></span></button>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <form class="form-horizontal" role="form" action="javascript:;">
+                        <div>
+                            <input type="hidden" name="csrf-token" value="{{csrf_token()}}">
+                        </div>
+                        <div class="form-group">
+                            <label for="number" class="col-sm-2 col-md-2 control-label"><span
+                                    style="color: red;">*</span>供应商编号：</label>
+                            <div class="col-sm-10 col-md-8">
+                                <input type="text" class="form-control" id="number" name="number" placeholder="请输入供应商编号" value="{{supplier_obj.number}}"
+                                    disabled>
+                                <div id="number_tip" class="tip"></div>
+                            </div>
+
+                        </div>
+                        <div class="form-group">
+                            <label for="name" class="col-sm-2 col-md-2 control-label"><span
+                                    style="color: red;">*</span>供应商名称：</label>
+                            <div class="col-sm-10 col-md-8">
+                                <input type="text" class="form-control" id="name" name="name" placeholder="请输入供应商名称" value="{{supplier_obj.name}}"
+                                    required>
+                                <div id="name_tip" class="tip"></div>
+                            </div>
+
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <button class="btn btn-default" id="enter">确定</button>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+</div>
+{%- endblock content %}
+{% block scripts %}
+{{super()}}
+<script>
+    $(document).ready(function(){
+        var csrftoken=$("input[name='csrf-token']").val();
+        var number;
+        var name;
+        var nameFlag;
+        $("#name").focus(function () {
+            $("#name_tip").hide();
+        });
+        $("#name").blur(function () {
+            name = $.trim($("#name").val());
+
+            // 判断输入的值
+            if (name == "") {
+                nameFlag = false;
+            } else {
+                if (name.length > 30) {
+                    $("#name_tip").text("长度不能多于30位")
+                    $("#name_tip").show();
+                    nameFlag = false;
+
+                } else {
+                    nameFlag = true;
+
+                }
+            }
+        })
+        $("#enter").click(function () {
+            if (!nameFlag) {
+                return
+            }
+            number = $.trim($("#number").val());
+            name = $.trim($("#name").val());
+            $.ajax({
+                url: "/supplier/mod/"+number,
+                type: "POST",
+                dataType: "json",
+                data: { "number": number, "name": name },
+                headers: { "X-CSRFToken": csrftoken },
+                success: function (data) {
+                    if (data.code == 0) {
+                        location="/supplier/detail/"+number
+                    } else {
+                        alert("修改失败")
+                    }
+
+                }
+            });
+
+        })
+    })
+</script>
+{%endblock scripts%}
+{%endblock body%}

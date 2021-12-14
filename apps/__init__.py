@@ -8,8 +8,10 @@ from .upload.view import upload_bp
 from .visitor.view import visitor_bp
 from .scanning.view import scan_bp
 from .QR_code.view import qrcode_bp
+from .supplier.view import supplier_bp
+from .machinepart.view import machine_bp
 from flask import Flask
-from .exts import bootstrap,db,login_manager
+from .exts import bootstrap,db,login_manager,csrf
 
 
 def create_app(class_name):
@@ -20,6 +22,7 @@ def create_app(class_name):
     bootstrap.init_app(app)
     db.init_app(app)
     login_manager.init_app(app)
+    csrf.init_app(app)
     # 添加全局模板
     app.add_template_global(get_months,"get_months")
     app.add_template_global(byte2str,"byte2str")
@@ -32,5 +35,7 @@ def create_app(class_name):
     app.register_blueprint(upload_bp)
     app.register_blueprint(scan_bp)
     app.register_blueprint(qrcode_bp)
+    app.register_blueprint(supplier_bp,url_prefix='/supplier')
+    app.register_blueprint(machine_bp,url_prefix='/machine')
     print(app.url_map)
     return app

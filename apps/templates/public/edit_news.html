@@ -34,6 +34,7 @@
                 {%endif%}
 
                 <li><a href="{{url_for('upload.software')}}">下载文件</a></li>
+                <li><a href="{{url_for('qrcode.generate_qrcode')}}">生成二维码</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 {% if current_user.username %}
@@ -59,24 +60,27 @@
     </div>
 </nav>
 <div class="container">
-    <div>
-        <div>
-            <p>发布新闻</p>
+    <div class="row">
+        <div class="col-sm-8 col-md-8">
+            <div>
+                <p>发布新闻</p>
+            </div>
+            <div>
+                <form action="{{url_for('public.publish_news')}}" method="post">
+                    标题：<input type="text" name="title" placeholder="请在此输入标题！">
+    
+                    <textarea id="news-content" placeholder="请在此输入内容！" name="news-content"></textarea>
+                    分类：<select name="news-type" id="news-type">
+                        {%for n in news_type_list%}
+                        <option value="{{n.id}}">{{n.name}}</option>
+                        {%endfor%}
+                    </select>
+                    <input type="submit" value="发布">
+                </form>
+    
+            </div>
         </div>
-        <div>
-            <form action="{{url_for('public.publish_news')}}" method="post">
-                标题：<input type="text" name="title" placeholder="请在此输入标题！">
-
-                <textarea id="news-content" placeholder="请在此输入内容！" name="news-content"></textarea>
-                分类：<select name="news-type" id="news-type">
-                    {%for n in news_type_list%}
-                    <option value="{{n.id}}">{{n.name}}</option>
-                    {%endfor%}
-                </select>
-                <input type="submit" value="发布">
-            </form>
-
-        </div>
+        
     </div>
 
 </div>

@@ -7,7 +7,7 @@ from uuid import uuid4
 from .models import News, NewsType
 from ..user.view import role_required
 from flask_login import login_required, current_user
-from ..exts import db
+from ..exts import db,csrf
 
 public_bp = Blueprint("public", __name__)
 
@@ -39,8 +39,8 @@ def index():
 @public_bp.route("/news/<id>")
 def news(id):
     news = db.session.query(News).get(id)
-
-    return render_template("public/news.html", news=news)
+    news_list=db.session.query(News).order_by(News.id.desc()).all()
+    return render_template("public/news.html", news=news,news_list=news_list)
 
 # 管理员编辑页
 
@@ -54,7 +54,7 @@ def edit_news():
 
 # 接收上传图片
 
-
+@csrf.exempt
 @public_bp.route("/upload_image", methods=["POST"])
 def upload_image():
     upload_file = request.files.get("file")
@@ -67,7 +67,7 @@ def upload_image():
     }
     return jsonify(RET)
 
-
+@csrf.exempt
 @public_bp.route("/publish_news", methods=["POST"])
 @login_required
 @role_required
