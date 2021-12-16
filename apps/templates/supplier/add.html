@@ -47,12 +47,13 @@
                     <ul class="dropdown-menu">
                         <li><a href="{{url_for('user.info')}}">用户中心</a></li>
                         <li><a href="{{url_for('user.mod_password')}}">修改密码</a></li>
+                        <li><a href="{{url_for('user.logout')}}">注销</a></li>
                     </ul>
                 </li>
 
 
                 <input type="hidden" name="username" value="{{current_user.username}}">
-                <li><a href="{{url_for('user.logout')}}">注销</a></li>
+                
                 {% else%}
                 <li><a href="{{url_for('user.login')}}">登录</a></li>
                 <li><a href="{{url_for('user.register')}}">注册</a></li>
@@ -72,7 +73,7 @@
             <ul class="nav">
                 <li class="active"><a href="{{url_for('supplier.manage')}}">供应商管理<span
                             class="sr-only">(current)</span></a></li>
-                <li><a href="#">零件管理</a></li>
+                <li><a href="{{url_for('machinepart.manage')}}">零件管理</a></li>
 
             </ul>
         </div>

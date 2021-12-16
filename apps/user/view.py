@@ -3,7 +3,7 @@ from functools import wraps
 from flask_login.utils import login_required, login_user, logout_user, current_user
 from ..office.models import Category, Department, Equipment, Location
 from flask.helpers import flash, url_for
-from ..exts import db, login_manager
+from ..exts import db, login_manager,csrf
 from .models import Role, User
 from flask import Blueprint, jsonify, redirect, session
 from flask.globals import request
@@ -58,7 +58,7 @@ def login():
 
     return render_template("user/login.html")
 
-
+@csrf.exempt
 @user_bp.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
@@ -88,6 +88,7 @@ def logout():
 
 
 # 验证用户名
+@csrf.exempt
 @user_bp.route("/verifi_username", methods=["POST"])
 def verifi_username():
     username = request.form.get("username")

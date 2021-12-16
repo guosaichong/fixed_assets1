@@ -1,5 +1,5 @@
 from flask import Blueprint, request, redirect, render_template
-from flask.helpers import send_from_directory, url_for
+from flask.helpers import flash, send_from_directory, url_for
 from ..exts.forms import UploadForm
 import os
 from settings import File_UPLOAD_PATH
@@ -10,14 +10,16 @@ upload_bp = Blueprint("upload", __name__)
 
 @upload_bp.route("/upload", methods=["GET", "POST"])
 def upload():
+    form = UploadForm()
     if request.method == "POST":
         f = request.files.get("file")
 
         upload_path = os.path.join(
-            File_UPLOAD_PATH, uuid4().hex+os.path.splitext(f.filename)[1])
+            File_UPLOAD_PATH, f.filename)
         f.save(upload_path)
-        return redirect(url_for("upload.upload"))
-    form = UploadForm()
+        flash("上传成功！")
+        return render_template("upload/upload.html", form=form)
+    
     return render_template("upload/upload.html", form=form)
 
 

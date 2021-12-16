@@ -1,0 +1,23 @@
+{% extends "bootstrap/base.html" %}
+{% block title %}没有工单{% endblock %}
+{% block styles %}
+{{ super() }}
+
+{% endblock %}
+{% block content %}
+<div>
+    <p style="font-size: 100px;" class="text-center">暂时没有工单</p>
+</div>
+
+{% endblock %}
+{% block scripts %}
+{{ super() }}
+<script>
+$(document).ready(function () {
+    setInterval(() => {
+        location.href="{{url_for('sorting.even_tips')}}"
+    }, 1000*60*5);
+})
+</script>
+
+{% endblock %}

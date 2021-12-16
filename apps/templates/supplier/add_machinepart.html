@@ -124,7 +124,7 @@
                         <div class="pull-right" style="margin-top: 2px;">
                             <form action="javascript:;">
                                 <div class="form-group pull-left">
-                                    <input type="text" class="form-control" placeholder="输入名称或编号" name="search" required
+                                    <input type="text" class="form-control" placeholder="输入供应商名称或编号" name="search" required
                                         value="{{find_content}}">
                                 </div>
                                 <button class="btn btn-default pull-right" id="search-btn"><span
@@ -142,7 +142,7 @@
                     </div>
                     <div class="added-parts">
                         {% for i in added_parts %}
-                        <div><span>{{i.part_number}}({{i.part_name}})</span><span><a
+                        <div><span><a href="{{url_for('machinepart.detail',part_number=i.part_number)}}" title="{{i.part_name}}">{{i.part_number}}({{i.part_name}})</a></span><span><a
                                     href="{{url_for('supplier.reduce_machinepart',number=supplier_obj.number)}}?part_number={{i.part_number}}"
                                     title="删除"><img src="{{url_for('static',filename='img/删除.png')}}" alt="删除"
                                         style="width: 14px;height: 14px;"></a></span></div>

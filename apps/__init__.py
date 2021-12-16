@@ -10,6 +10,7 @@ from .scanning.view import scan_bp
 from .QR_code.view import qrcode_bp
 from .supplier.view import supplier_bp
 from .machinepart.view import machine_bp
+from .sorting.view import sorting_bp
 from flask import Flask
 from .exts import bootstrap,db,login_manager,csrf
 
@@ -37,5 +38,6 @@ def create_app(class_name):
     app.register_blueprint(qrcode_bp)
     app.register_blueprint(supplier_bp,url_prefix='/supplier')
     app.register_blueprint(machine_bp,url_prefix='/machine')
+    app.register_blueprint(sorting_bp,url_prefix='/sorting')
     print(app.url_map)
     return app

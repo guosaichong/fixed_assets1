@@ -1,0 +1,152 @@
+{% extends "bootstrap/base.html" %}
+{% block title %}偶数提示{% endblock %}
+{% block styles %}
+{{ super() }}
+<style>
+    .mycontent .first {
+        font-size: 100px;
+
+    }
+
+    .mycontent .second {
+        font-size: 110px;
+        background-color: aqua;
+
+    }
+
+    .mycontent .third {
+        font-size: 100px;
+
+    }
+
+</style>
+{% endblock %}
+{% block content %}
+<div class="mycontent">
+    <p class="first">偶数第一架</p>
+</div>
+
+<div class="mycontent">
+    <p class="second"></p>
+</div>
+
+<div class="mycontent">
+    <p class="third"></p>
+</div>
+<div class="hidden">
+    {% for i in even_list %}
+    <p>{{i}}</p>
+    {% endfor %}
+</div>
+{% endblock %}
+{% block scripts %}
+{{ super() }}
+<script>
+    $(document).ready(function () {
+        $(".second").text("第1片：" + $(".hidden p:eq(5)").text())
+        $(".third").text("第2片：" + $(".hidden p:eq(4)").text())
+        setTimeout(function () {
+
+            $(".first").text("第1片：" + $(".hidden p:eq(5)").text())
+            $(".second").text("第2片：" + $(".hidden p:eq(4)").text())
+            $(".third").text("第3片：" + $(".hidden p:eq(3)").text())
+            setTimeout(function () {
+                $(".first").text("第2片：" + $(".hidden p:eq(4)").text())
+                $(".second").text("第3片：" + $(".hidden p:eq(3)").text())
+                $(".third").text("第4片：" + $(".hidden p:eq(2)").text())
+                setTimeout(function () {
+                    $(".first").text("第3片：" + $(".hidden p:eq(3)").text())
+                    $(".second").text("第4片：" + $(".hidden p:eq(2)").text())
+                    $(".third").text("第5片：" + $(".hidden p:eq(1)").text())
+                    setTimeout(function () {
+                        $(".first").text("第4片：" + $(".hidden p:eq(2)").text())
+                        $(".second").text("第5片：" + $(".hidden p:eq(1)").text())
+                        $(".third").text("第6片：" + $(".hidden p:eq(0)").text())
+                        setTimeout(function () {
+                            $(".first").text("第5片：" + $(".hidden p:eq(1)").text())
+                            $(".second").text("第6片：" + $(".hidden p:eq(0)").text())
+                            $(".third").text("")
+                            setTimeout(function () {//10秒之后显示
+                                $(".first").text("偶数第二架")
+                                $(".second").text("第1片：" + $(".hidden p:eq(11)").text())
+                                $(".third").text("第2片：" + $(".hidden p:eq(10)").text())
+                                setTimeout(function () {
+                                    $(".first").text("第1片：" + $(".hidden p:eq(11)").text())
+                                    $(".second").text("第2片：" + $(".hidden p:eq(10)").text())
+                                    $(".third").text("第3片：" + $(".hidden p:eq(9)").text())
+                                    setTimeout(function () {
+                                        $(".first").text("第2片：" + $(".hidden p:eq(10)").text())
+                                        $(".second").text("第3片：" + $(".hidden p:eq(9)").text())
+                                        $(".third").text("第4片：" + $(".hidden p:eq(8)").text())
+                                        setTimeout(function () {
+                                            $(".first").text("第3片：" + $(".hidden p:eq(9)").text())
+                                            $(".second").text("第4片：" + $(".hidden p:eq(8)").text())
+                                            $(".third").text("第5片：" + $(".hidden p:eq(7)").text())
+                                            setTimeout(function () {
+                                                $(".first").text("第4片：" + $(".hidden p:eq(8)").text())
+                                                $(".second").text("第5片：" + $(".hidden p:eq(7)").text())
+                                                $(".third").text("第6片：" + $(".hidden p:eq(6)").text())
+                                                setTimeout(function () {
+                                                    $(".first").text("第5片：" + $(".hidden p:eq(7)").text())
+                                                    $(".second").text("第6片：" + $(".hidden p:eq(6)").text())
+                                                    $(".third").text("")
+                                                    setTimeout(function () {//10秒之后显示第3架
+                                                        $(".first").text("偶数第三架")
+                                                        $(".second").text("第1片：" + $(".hidden p:eq(17)").text())
+                                                        $(".third").text("第2片：" + $(".hidden p:eq(16)").text())
+                                                        setTimeout(function () {
+                                                            $(".first").text("第1片：" + $(".hidden p:eq(17)").text())
+                                                            $(".second").text("第2片：" + $(".hidden p:eq(16)").text())
+                                                            $(".third").text("第3片：" + $(".hidden p:eq(15)").text())
+                                                            setTimeout(function () {
+                                                                $(".first").text("第2片：" + $(".hidden p:eq(16)").text())
+                                                                $(".second").text("第3片：" + $(".hidden p:eq(15)").text())
+                                                                $(".third").text("第4片：" + $(".hidden p:eq(14)").text())
+                                                                setTimeout(function () {
+                                                                    $(".first").text("第3片：" + $(".hidden p:eq(15)").text())
+                                                                    $(".second").text("第4片：" + $(".hidden p:eq(14)").text())
+                                                                    $(".third").text("第5片：" + $(".hidden p:eq(13)").text())
+                                                                    setTimeout(function () {
+                                                                        $(".first").text("第4片：" + $(".hidden p:eq(14)").text())
+                                                                        $(".second").text("第5片：" + $(".hidden p:eq(13)").text())
+                                                                        $(".third").text("第6片：" + $(".hidden p:eq(12)").text())
+                                                                        setTimeout(function () {
+                                                                            $(".first").text("第5片：" + $(".hidden p:eq(13)").text())
+                                                                            $(".second").text("第6片：" + $(".hidden p:eq(12)").text())
+                                                                            $(".third").text("");
+                                                                            // 删除服务器中的刚才使用的偶数数据
+                                                                            $.ajax({
+                                                                                url: "{{url_for('sorting.del_even')}}",
+                                                                                type: "GET",
+                                                                                dataType: "json",
+                                                                                
+                                                                                success: function (data) {
+                                                                                    if (data.code == 200) {
+                                                                                        location.href="{{url_for('sorting.even_tips')}}"
+                                                                                    }
+                                                                                }
+                                                                            });
+                                                                        }, 5000)
+                                                                    }, 5000)
+                                                                }, 5000)
+                                                            }, 5000)
+                                                        }, 5000)
+                                                    }, 10000)//第二架和第三架之间的时间
+                                                }, 5000)
+                                            }, 5000)
+                                        }, 5000)
+                                    }, 5000)
+                                }, 5000)
+                            }, 10000)//第一架和第二架之间的时间
+                        }, 5000)
+                    }, 5000);
+                }, 5000);
+            }, 5000);
+        }, 5000);
+
+
+
+
+    })
+</script>
+{% endblock %}

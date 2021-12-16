@@ -7,7 +7,7 @@ from ..exts import db
 class News(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     title = db.Column(db.String(100), nullable=False)
-    content = db.Column(db.BLOB, nullable=False)
+    content = db.Column(db.LargeBinary(65536), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey(
         'user.id'), nullable=False)
     news_type_id = db.Column(

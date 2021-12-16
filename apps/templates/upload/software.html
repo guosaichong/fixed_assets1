@@ -41,10 +41,8 @@
     }
 
     .cate-list {
-        flex: 1;
         display: flex;
         flex-wrap: wrap;
-        /* justify-content: space-around; */
     }
 
     .cate-list li {
@@ -53,15 +51,18 @@
         height: 30px;
         text-align: left;
         line-height: 30px;
+        margin-right: 36px;
     }
 
     .cate-list li a {
         position: relative;
         display: inline-block;
         margin-left: 4px;
-        white-space: pre;
         text-decoration: none;
         color: #333;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
     }
 
     .cate-list li a:hover {
@@ -148,8 +149,7 @@
         <div class="cate-list">
 
             {%for i in soft_list%}
-            <li><a href="{{url_for('upload.download_software',folder='办公软件',filename=i)}}" title="{{i}}">{%if
-                    i|length>13%}{{i[:13]+"..."}}{%else%}{{i}}{%endif%}</a></li>
+            <li><a href="{{url_for('upload.download_software',folder='办公软件',filename=i)}}" title="{{i}}">{{i}}</a></li>
             {%endfor%}
 
 
@@ -162,8 +162,7 @@
         <div class="cate-list">
 
             {%for i in docu_list%}
-            <li><a href="{{url_for('upload.download_software',folder='常用文件',filename=i)}}" title="{{i}}">{%if
-                    i|length>13%}{{i[:13]+"..."}}{%else%}{{i}}{%endif%}</a></li>
+            <li><a href="{{url_for('upload.download_software',folder='常用文件',filename=i)}}" title="{{i}}">{{i}}</a></li>
             {%endfor%}
 
 
@@ -177,8 +176,7 @@
         <div class="cate-list">
 
             {%for i in temp_list%}
-            <li><a href="{{url_for('upload.download_software',folder='临时文件',filename=i)}}" title="{{i}}">{%if
-                    i|length>13%}{{i[:13]+"..."}}{%else%}{{i}}{%endif%}</a></li>
+            <li><a href="{{url_for('upload.download_software',folder='临时文件',filename=i)}}" title="{{i}}">{{i}}</a></li>
             {%endfor%}
 
 

@@ -30,6 +30,9 @@
                 <li><a href="{{url_for('visitor.unloading')}}">卸货查询</a></li>
                 {%if current_user.username=="18102176668"%}
                 <li><a href="{{url_for('public.edit_news')}}">发表文章</a></li>
+                
+                {%endif%}
+                {%if current_user.username=="sorting"%}
                 <li class="active"><a href="{{url_for('upload.upload')}}">上传文件</a></li>
                 {%endif%}
                 <li><a href="{{url_for('upload.software')}}">下载文件</a></li>
@@ -49,7 +52,7 @@
 
 
                 <input type="hidden" name="username" value="{{current_user.username}}">
-                
+
                 {% else%}
                 <li><a href="{{url_for('user.login')}}">登录</a></li>
                 <li><a href="{{url_for('user.register')}}">注册</a></li>
@@ -74,11 +77,22 @@
                     {{form.submit}}
                 </div>
             </form>
+
         </div>
     </div>
-    
+    {% for message in get_flashed_messages() %}
+    <div class="tips">{{ message }}</div>
+    {% endfor %}
+
 </div>
 {%block scripts%}
 {{super()}}
+<script>
+    $(document).ready(function () {
+        setTimeout(() => {
+            $(".tips").text("")
+        }, 3000);
+    })
+</script>
 {%endblock scripts%}
 {%endblock body%}
